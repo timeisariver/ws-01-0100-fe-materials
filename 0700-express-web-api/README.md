@@ -7,6 +7,14 @@
 
 https://vws-api-spec-host.netlify.app/specs?id=express-web-api
 
+### 認証について
+
+- `/auth/signup` でユーザ登録
+- `/auth/login` でログインで認証を行うように実装してください。
+
+それぞれのエンドポイントでは jwt トークンを発行して各エンドポイントでは、
+Authorization ヘッダー内のトークンを検証して、トークンが不正な場合は 401 Unauthorized で返すように実装してください。
+
 ### 技術スタック
 
 - Express
@@ -15,15 +23,6 @@ https://vws-api-spec-host.netlify.app/specs?id=express-web-api
 - PostgreSQL
 - Docker
 - JWT
-
-
-## 認証について
-
-- `/auth/signup` でユーザ登録
-- `/auth/login` でログインで認証を行うように実装してください。
-
-それぞれのエンドポイントでは jwt トークンを発行して各エンドポイントでは、
-Authorization ヘッダー内のトークンを検証して、トークンが不正な場合は 401 Unauthorized で返すように実装してください。
 
 ## 課題で身に着けること
 
@@ -57,8 +56,8 @@ Hint: 方向性のチェックを行う際は、プルリクエストを使用�
 
 - [プルリクエストを出す上での注意点](https://lab.ver-1-0.net/posts/pr-points/)
 
-#### 4. 実装が完了したら、Github Pages にアップロードする。
+#### 4. メンターに最終レビューを依頼する
 
-#### 5. メンターに最終レビューを依頼する
+この課題では、アプリケーションの公開は不要なので実装完了次第レビューを依頼してください。
 
 
