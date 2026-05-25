@@ -73,7 +73,6 @@ CRUD の検証対象タスクは、テスト実行中に API から作成しま�
 - `GET /users/me`
 - `GET /users/projects`
 - `GET /users/projects/:slug`
-- `POST /users/projects`
 - `GET /users/tasks`
 - `POST /users/tasks`
 - `GET /users/tasks/:id`
@@ -100,8 +99,6 @@ CRUD の検証対象タスクは、テスト実行中に API から作成しま�
 - `GET /users/projects/programming`
   - `200` を返す
   - レスポンス `data` に UUID 形式の `id`, `name`, `slug` を含む
-- `POST /users/projects`
-  - 既存プロジェクトと重複する slug で `409` を返す
 - 存在しない slug は `404` を返す
 
 ### タスク
