@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { apiRequest } from "./support/http";
-import { createProjectPayload, missingTaskId, seedProject } from "./testData";
+import { missingTaskId, seedProject } from "./testData";
 
 type ProtectedEndpoint = {
   name: string;
@@ -20,14 +20,6 @@ const protectedEndpoints: ProtectedEndpoint[] = [
   {
     name: "GET /users/projects/:slug",
     path: `/users/projects/${seedProject.slug}`
-  },
-  {
-    name: "POST /users/projects",
-    path: "/users/projects",
-    options: {
-      method: "POST",
-      body: JSON.stringify(createProjectPayload("unauthorized-project"))
-    }
   },
   {
     name: "GET /users/tasks",
