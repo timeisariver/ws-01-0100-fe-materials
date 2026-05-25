@@ -13,6 +13,7 @@ describe("User API", () => {
     expectUser(response.body.data);
     expect(response.body.data).toEqual(
       expect.objectContaining({
+        username: seedUser.username,
         email: seedUser.email,
         status: seedUser.status
       })
