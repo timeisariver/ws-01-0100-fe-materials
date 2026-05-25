@@ -2,7 +2,49 @@ import { describe, expect, it } from "vitest";
 import { expectPageInfo } from "./support/assertions";
 import { Project, Task, expectProject, expectTask } from "./support/contracts";
 import { apiRequestWithToken, loginAsSeedUser } from "./support/http";
-import { missingTaskId, seedProject } from "./testData";
+import { missingProjectId, missingTaskId, seedProject } from "./testData";
+
+type TaskPayload = {
+  title: string;
+  kind: string;
+  description: string;
+  status: string;
+  projectId: string;
+  startingAt: string;
+  deadline: string;
+};
+
+type InvalidTaskPayloadCase = {
+  name: string;
+  override: Partial<TaskPayload>;
+};
+
+const invalidTaskPayloadCases: InvalidTaskPayloadCase[] = [
+  {
+    name: "不正な status",
+    override: {
+      status: "invalid-status"
+    }
+  },
+  {
+    name: "存在しない project id",
+    override: {
+      projectId: missingProjectId
+    }
+  },
+  {
+    name: "不正な kind",
+    override: {
+      kind: "invalid-kind"
+    }
+  },
+  {
+    name: "不正な deadline",
+    override: {
+      deadline: "invalid-date"
+    }
+  }
+];
 
 async function getSeedProject(token: string): Promise<Project> {
   const response = await apiRequestWithToken<{ data: unknown }>(
@@ -14,6 +56,37 @@ async function getSeedProject(token: string): Promise<Project> {
   expectProject(response.body.data);
 
   return response.body.data;
+}
+
+function createTaskPayload(projectId: string, override: Partial<TaskPayload> = {}): TaskPayload {
+  return {
+    title: `API test task ${crypto.randomUUID()}`,
+    kind: "task",
+    description: "Created by black-box API test.",
+    status: "scheduled",
+    projectId,
+    startingAt: "2024-01-01",
+    deadline: "2024-12-31",
+    ...override
+  };
+}
+
+async function createTask(token: string, projectId: string): Promise<Task> {
+  const response = await apiRequestWithToken<{ data: unknown }>("/users/tasks", token, {
+    method: "POST",
+    body: JSON.stringify(createTaskPayload(projectId))
+  });
+
+  expect(response.status).toBe(201);
+  expectTask(response.body.data);
+
+  return response.body.data;
+}
+
+async function deleteTask(token: string, taskId: string): Promise<void> {
+  await apiRequestWithToken(`/users/tasks/${taskId}`, token, {
+    method: "DELETE"
+  });
 }
 
 describe("Task API", () => {
@@ -153,4 +226,43 @@ describe("Task API", () => {
 
     expect(response.status).toBe(404);
   });
+});
+
+describe("Task API Create Validation", () => {
+  it.each(invalidTaskPayloadCases)(
+    "$name を指定した場合、400 Bad Request を返す",
+    async ({ override }) => {
+      const token = await loginAsSeedUser();
+      const project = await getSeedProject(token);
+
+      const response = await apiRequestWithToken("/users/tasks", token, {
+        method: "POST",
+        body: JSON.stringify(createTaskPayload(project.id, override))
+      });
+
+      expect(response.status).toBe(400);
+    }
+  );
+});
+
+describe("Task API Update Validation", () => {
+  it.each(invalidTaskPayloadCases)(
+    "$name を指定した場合、400 Bad Request を返す",
+    async ({ override }) => {
+      const token = await loginAsSeedUser();
+      const project = await getSeedProject(token);
+      const task = await createTask(token, project.id);
+
+      try {
+        const response = await apiRequestWithToken(`/users/tasks/${task.id}`, token, {
+          method: "PATCH",
+          body: JSON.stringify(createTaskPayload(project.id, override))
+        });
+
+        expect(response.status).toBe(400);
+      } finally {
+        await deleteTask(token, task.id);
+      }
+    }
+  );
 });

@@ -15,4 +15,6 @@ export const seedProject = seedProjects[0];
 
 export const missingProjectSlug = "missing-project-for-api-test";
 
+export const missingProjectId = "00000000-0000-4000-8000-000000000001";
+
 export const missingTaskId = "00000000-0000-4000-8000-000000000000";
