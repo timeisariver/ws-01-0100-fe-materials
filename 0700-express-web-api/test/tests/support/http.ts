@@ -20,12 +20,20 @@ export async function apiRequest<TBody = unknown>(
   });
 
   const text = await response.text();
-  const body = text.length > 0 ? (JSON.parse(text) as TBody) : (undefined as TBody);
+  const body = text.length > 0 ? parseResponseBody<TBody>(text) : (undefined as TBody);
 
   return {
     status: response.status,
     body
   };
+}
+
+function parseResponseBody<TBody>(text: string): TBody {
+  try {
+    return JSON.parse(text) as TBody;
+  } catch {
+    return text as TBody;
+  }
 }
 
 export async function apiRequestWithToken<TBody = unknown>(

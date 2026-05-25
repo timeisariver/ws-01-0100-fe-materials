@@ -2,7 +2,12 @@ import { describe, expect, it } from "vitest";
 import { expectPageInfo } from "./support/assertions";
 import { Project, expectProject } from "./support/contracts";
 import { apiRequestWithToken, loginAsSeedUser } from "./support/http";
-import { missingProjectSlug, seedProject, seedProjects } from "./testData";
+import {
+  createProjectPayload,
+  missingProjectSlug,
+  seedProject,
+  seedProjects
+} from "./testData";
 
 async function getProjectPage(token: string, page: number): Promise<Project> {
   const response = await apiRequestWithToken<{ data: unknown[]; pageInfo: unknown }>(
@@ -62,6 +67,17 @@ describe("Project API", () => {
         slug: seedProject.slug
       })
     );
+  });
+
+  it("重複した slug でプロジェクトを作成すると 409 を返す", async () => {
+    const token = await loginAsSeedUser();
+
+    const response = await apiRequestWithToken("/users/projects", token, {
+      method: "POST",
+      body: JSON.stringify(createProjectPayload(seedProject.slug))
+    });
+
+    expect(response.status).toBe(409);
   });
 
   it("存在しない slug は 404 を返す", async () => {

@@ -64,6 +64,7 @@ CRUD の検証対象タスクは、テスト実行中に API から作成しま�
 - `POST /auth/signup`
   - 一意な email と確認用フィールドが一致する payload で `200` を返す
   - レスポンス `data` に `uuid`, `accessToken`, `refreshToken` を含む
+  - 既存ユーザーと重複する email で `409` を返す
 
 ### 認証必須エンドポイント
 
@@ -72,6 +73,7 @@ CRUD の検証対象タスクは、テスト実行中に API から作成しま�
 - `GET /users/me`
 - `GET /users/projects`
 - `GET /users/projects/:slug`
+- `POST /users/projects`
 - `GET /users/tasks`
 - `POST /users/tasks`
 - `GET /users/tasks/:id`
@@ -98,6 +100,8 @@ CRUD の検証対象タスクは、テスト実行中に API から作成しま�
 - `GET /users/projects/programming`
   - `200` を返す
   - レスポンス `data` に UUID 形式の `id`, `name`, `slug` を含む
+- `POST /users/projects`
+  - 既存プロジェクトと重複する slug で `409` を返す
 - 存在しない slug は `404` を返す
 
 ### タスク
