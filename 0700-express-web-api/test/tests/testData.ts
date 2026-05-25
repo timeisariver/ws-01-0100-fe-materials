@@ -5,9 +5,13 @@ export const seedUser = {
   status: "active"
 } as const;
 
-export const seedProject = {
-  slug: "programming"
-} as const;
+export const seedProjects = [
+  { slug: "programming" },
+  { slug: "english" },
+  { slug: "design" }
+] as const;
+
+export const seedProject = seedProjects[0];
 
 export const missingProjectSlug = "missing-project-for-api-test";
 
