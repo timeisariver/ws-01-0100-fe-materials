@@ -25,6 +25,23 @@ export function expectOptionalIsoDateTime(value: unknown): void {
   expect(value).toMatch(isoDateTimePattern);
 }
 
+export function expectOptionalString(value: unknown): void {
+  if (value === null || value === undefined) {
+    return;
+  }
+
+  expect(value).toEqual(expect.any(String));
+}
+
+export function expectOptionalInteger(value: unknown): void {
+  if (value === null || value === undefined) {
+    return;
+  }
+
+  expect(value).toEqual(expect.any(Number));
+  expect(Number.isInteger(value)).toBe(true);
+}
+
 export function expectPageInfo(value: unknown, expected: { limit: number; page: number }): void {
   expect(value).toEqual(
     expect.objectContaining({

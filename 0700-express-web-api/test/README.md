@@ -42,9 +42,77 @@ API_BASE_URL=http://localhost:3001/api/v1 npm run test
   - username: `Test User`
   - status: `active`
 - 取得可能なプロジェクト
-  - slug: `programming`
-  - id: UUID
+  - `limit=1` のページネーションで次の順に取得できる 3 件
+    - page 1: slug `programming`, id: UUID
+    - page 2: slug `english`, id: UUID
+    - page 3: slug `design`, id: UUID
 - タスク一覧確認用のタスク
   - status: `scheduled` のタスクが 1 件以上
 
 CRUD の検証対象タスクは、テスト実行中に API から作成します。
+
+## API 振る舞い契約
+
+テストは、次の API 振る舞いを前提にしています。
+
+### 認証
+
+- `POST /auth/login`
+  - seed ユーザーの `email` / `password` で `200` を返す
+  - 不正な password で `401` を返す
+  - レスポンス `data` に `uuid`, `accessToken`, `refreshToken` を含む
+- `POST /auth/signup`
+  - 一意な email と確認用フィールドが一致する payload で `200` を返す
+  - レスポンス `data` に `uuid`, `accessToken`, `refreshToken` を含む
+
+### 認証必須エンドポイント
+
+次のエンドポイントは、トークンなしのリクエストで `401` を返してください。
+
+- `GET /users/me`
+- `GET /users/projects`
+- `GET /users/projects/:slug`
+- `GET /users/tasks`
+- `POST /users/tasks`
+- `GET /users/tasks/:id`
+- `PATCH /users/tasks/:id`
+- `DELETE /users/tasks/:id`
+
+### ユーザー
+
+- `GET /users/me`
+  - 認証済みの場合は `200` を返す
+  - レスポンス `data` に UUID 形式の `id`, `username`, `email`, `status` を含む
+  - seed ユーザーの `username`, `email`, `status` と一致する
+
+### プロジェクト
+
+- `GET /users/projects?limit=1&page=1`
+  - `200` を返す
+  - レスポンス `data` は最大 1 件
+  - レスポンス `pageInfo` に `totalCount`, `limit`, `page`, `hasNext`, `hasPrevious` を含む
+- `GET /users/projects?limit=1&page=1..3`
+  - page 1, 2, 3 の各レスポンス `data` は 1 件
+  - page 1, 2, 3 の slug は `programming`, `english`, `design` の順で返る
+  - page 1, 2, 3 の id は重複しない
+- `GET /users/projects/programming`
+  - `200` を返す
+  - レスポンス `data` に UUID 形式の `id`, `name`, `slug` を含む
+- 存在しない slug は `404` を返す
+
+### タスク
+
+- `GET /users/tasks?limit=20&page=1&status=scheduled`
+  - `200` を返す
+  - `scheduled` のタスクを 1 件以上返す
+  - レスポンス `pageInfo` に `totalCount`, `limit`, `page`, `hasNext`, `hasPrevious` を含む
+- `POST /users/tasks`
+  - 正しい payload で `201` を返す
+  - 不正な payload で `400` を返す
+- `GET /users/tasks/:id`
+  - 作成済みタスク ID で `200` を返す
+  - 存在しない UUID 形式の ID は `404` を返す
+- `PATCH /users/tasks/:id`
+  - 作成済みタスク ID と正しい payload で `200` を返す
+- `DELETE /users/tasks/:id`
+  - 作成済みタスク ID で `200` を返す

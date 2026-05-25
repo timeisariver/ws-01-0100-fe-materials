@@ -1,8 +1,22 @@
 import { describe, expect, it } from "vitest";
 import { expectPageInfo } from "./support/assertions";
-import { expectProject } from "./support/contracts";
+import { Project, expectProject } from "./support/contracts";
 import { apiRequestWithToken, loginAsSeedUser } from "./support/http";
-import { missingProjectSlug, seedProject } from "./testData";
+import { missingProjectSlug, seedProject, seedProjects } from "./testData";
+
+async function getProjectPage(token: string, page: number): Promise<Project> {
+  const response = await apiRequestWithToken<{ data: unknown[]; pageInfo: unknown }>(
+    `/users/projects?limit=1&page=${page}`,
+    token
+  );
+
+  expect(response.status).toBe(200);
+  expect(response.body.data).toHaveLength(1);
+  expectPageInfo(response.body.pageInfo, { limit: 1, page });
+  expectProject(response.body.data[0]);
+
+  return response.body.data[0];
+}
 
 describe("Project API", () => {
   it("プロジェクト一覧をページネーション付きで取得できる", async () => {
@@ -18,6 +32,19 @@ describe("Project API", () => {
     expect(response.body.data.length).toBeLessThanOrEqual(1);
     expectPageInfo(response.body.pageInfo, { limit: 1, page: 1 });
     response.body.data.forEach(expectProject);
+  });
+
+  it("プロジェクト一覧を 3 ページに分けて順番通りに取得できる", async () => {
+    const token = await loginAsSeedUser();
+
+    const projects = await Promise.all(
+      seedProjects.map((_, index) => getProjectPage(token, index + 1))
+    );
+
+    expect(projects.map((project) => project.slug)).toEqual(
+      seedProjects.map((project) => project.slug)
+    );
+    expect(new Set(projects.map((project) => project.id)).size).toBe(projects.length);
   });
 
   it("slug でプロジェクトを取得できる", async () => {
