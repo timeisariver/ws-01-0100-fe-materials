@@ -53,7 +53,7 @@ export async function loginAsSeedUser(): Promise<string> {
 
   expect(
     response.status,
-    "seed ユーザーでログインできません。npm run db:seed で john@example.com / password のユーザーを投入してください。"
+    `seed ユーザーでログインできません。npm run db:seed で ${seedUser.email} / ${seedUser.password} のユーザーを投入してください。`
   ).toBe(200);
   expect(response.body).toHaveProperty("data.accessToken");
   const accessToken = response.body.data?.accessToken;

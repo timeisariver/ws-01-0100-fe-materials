@@ -37,9 +37,9 @@ API_BASE_URL=http://localhost:3001/api/v1 npm run test
 テストコードを正として、学習者は `npm run db:seed` で以下のデータを投入してください。
 
 - ログイン可能なユーザー
-  - email: `john@example.com`
+  - email: `test@example.com`
   - password: `password`
-  - username: 任意の文字列
+  - username: `Test User`
   - status: `active`
 - 取得可能なプロジェクト
   - slug: `programming`
