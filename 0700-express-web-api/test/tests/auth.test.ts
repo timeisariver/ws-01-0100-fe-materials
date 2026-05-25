@@ -35,6 +35,21 @@ describe("Auth API", () => {
     expectAuthData(response.body.data);
   });
 
+  it("重複したメールアドレスで signup すると 409 を返す", async () => {
+    const response = await apiRequest("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        username: "duplicate-seed-user",
+        email: seedUser.email,
+        email_confirmation: seedUser.email,
+        password: "password",
+        password_confirmation: "password"
+      })
+    });
+
+    expect(response.status).toBe(409);
+  });
+
   it("不正なログインは 401 を返す", async () => {
     const response = await apiRequest("/auth/login", {
       method: "POST",
