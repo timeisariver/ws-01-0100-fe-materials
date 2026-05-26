@@ -108,61 +108,65 @@ async function getTaskPage(token: string, page: number): Promise<Task> {
   return response.body.data[0];
 }
 
-describe("Task API", () => {
-  it("タスク一覧を status で絞り込める", async () => {
-    const token = await loginAsSeedUser();
+describe("GET /users/tasks", () => {
+  describe("正常系", () => {
+    it("status で絞り込める", async () => {
+      const token = await loginAsSeedUser();
 
-    const response = await apiRequestWithToken<{ data: unknown[]; pageInfo: unknown }>(
-      "/users/tasks?limit=20&page=1&status=scheduled",
-      token
-    );
-
-    expect(response.status).toBe(200);
-    expect(Array.isArray(response.body.data)).toBe(true);
-    expect(response.body.data.length).toBeGreaterThan(0);
-    expectPageInfo(response.body.pageInfo, { limit: 20, page: 1 });
-
-    response.body.data.forEach((task) => {
-      expectTask(task);
-      expect(task).toEqual(
-        expect.objectContaining({
-          status: "scheduled"
-        })
+      const response = await apiRequestWithToken<{ data: unknown[]; pageInfo: unknown }>(
+        "/users/tasks?limit=20&page=1&status=scheduled",
+        token
       );
+
+      expect(response.status).toBe(200);
+      expect(Array.isArray(response.body.data)).toBe(true);
+      expect(response.body.data.length).toBeGreaterThan(0);
+      expectPageInfo(response.body.pageInfo, { limit: 20, page: 1 });
+
+      response.body.data.forEach((task) => {
+        expectTask(task);
+        expect(task).toEqual(
+          expect.objectContaining({
+            status: "scheduled"
+          })
+        );
+      });
+    });
+
+    describe("ページネーション", () => {
+      it("3 ページに分けて取得できる", async () => {
+        const token = await loginAsSeedUser();
+        const project = await getSeedProject(token);
+        const createdTasks = await Promise.all([
+          createTask(token, project.id),
+          createTask(token, project.id),
+          createTask(token, project.id)
+        ]);
+
+        try {
+          const tasks = await Promise.all([
+            getTaskPage(token, 1),
+            getTaskPage(token, 2),
+            getTaskPage(token, 3)
+          ]);
+
+          expect(new Set(tasks.map((task) => task.id)).size).toBe(tasks.length);
+        } finally {
+          await Promise.all(createdTasks.map((task) => deleteTask(token, task.id)));
+        }
+      });
     });
   });
+});
 
-  it("タスク一覧を 3 ページに分けて取得できる", async () => {
-    const token = await loginAsSeedUser();
-    const project = await getSeedProject(token);
-    const createdTasks = await Promise.all([
-      createTask(token, project.id),
-      createTask(token, project.id),
-      createTask(token, project.id)
-    ]);
+describe("POST /users/tasks", () => {
+  describe("正常系", () => {
+    it("タスクを作成できる", async () => {
+      const token = await loginAsSeedUser();
+      const project = await getSeedProject(token);
+      const title = `API test task ${crypto.randomUUID()}`;
 
-    try {
-      const tasks = await Promise.all([
-        getTaskPage(token, 1),
-        getTaskPage(token, 2),
-        getTaskPage(token, 3)
-      ]);
-
-      expect(new Set(tasks.map((task) => task.id)).size).toBe(tasks.length);
-    } finally {
-      await Promise.all(createdTasks.map((task) => deleteTask(token, task.id)));
-    }
-  });
-
-  it("タスクを作成し、取得・更新・削除できる", async () => {
-    const token = await loginAsSeedUser();
-    const project = await getSeedProject(token);
-    const title = `API test task ${crypto.randomUUID()}`;
-
-    const createResponse = await apiRequestWithToken<{ data: unknown }>(
-      "/users/tasks",
-      token,
-      {
+      const response = await apiRequestWithToken<{ data: unknown }>("/users/tasks", token, {
         method: "POST",
         body: JSON.stringify({
           title,
@@ -173,159 +177,205 @@ describe("Task API", () => {
           startingAt: "2024-01-01",
           deadline: "2024-12-31"
         })
-      }
-    );
+      });
 
-    expect(createResponse.status).toBe(201);
-    expectTask(createResponse.body.data);
-    expect(createResponse.body.data).toEqual(
-      expect.objectContaining({
-        title,
-        description: "Created by black-box API test.",
-        status: "scheduled"
-      })
-    );
-
-    const createdTask = createResponse.body.data as Task;
-
-    const getResponse = await apiRequestWithToken<{ data: unknown }>(
-      `/users/tasks/${createdTask.id}`,
-      token
-    );
-
-    expect(getResponse.status).toBe(200);
-    expectTask(getResponse.body.data);
-    expect(getResponse.body.data).toEqual(
-      expect.objectContaining({
-        id: createdTask.id,
-        title
-      })
-    );
-
-    const updateResponse = await apiRequestWithToken<{ data: unknown }>(
-      `/users/tasks/${createdTask.id}`,
-      token,
-      {
-        method: "PATCH",
-        body: JSON.stringify({
-          title: `${title} updated`,
-          kind: "task",
-          description: "Updated by black-box API test.",
-          status: "completed",
-          projectId: project.id,
-          startingAt: "2024-01-01",
-          deadline: "2024-12-31"
+      expect(response.status).toBe(201);
+      expectTask(response.body.data);
+      expect(response.body.data).toEqual(
+        expect.objectContaining({
+          title,
+          description: "Created by black-box API test.",
+          status: "scheduled"
         })
-      }
-    );
+      );
 
-    expect(updateResponse.status).toBe(200);
-    expectTask(updateResponse.body.data);
-    expect(updateResponse.body.data).toEqual(
-      expect.objectContaining({
-        id: createdTask.id,
-        title: `${title} updated`,
-        description: "Updated by black-box API test.",
-        status: "completed"
-      })
-    );
-
-    const deleteResponse = await apiRequestWithToken<{ data: unknown }>(
-      `/users/tasks/${createdTask.id}`,
-      token,
-      {
-        method: "DELETE"
-      }
-    );
-
-    expect(deleteResponse.status).toBe(200);
-    expectTask(deleteResponse.body.data);
-    expect(deleteResponse.body.data).toEqual(
-      expect.objectContaining({
-        id: createdTask.id
-      })
-    );
-  });
-
-  it("不正な payload でタスク作成すると 400 を返す", async () => {
-    const token = await loginAsSeedUser();
-
-    const response = await apiRequestWithToken("/users/tasks", token, {
-      method: "POST",
-      body: JSON.stringify({
-        title: ""
-      })
+      await deleteTask(token, response.body.data.id);
     });
-
-    expect(response.status).toBe(400);
   });
 
-  it("存在しない task ID を取得すると 404 を返す", async () => {
-    const token = await loginAsSeedUser();
-
-    const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token);
-
-    expect(response.status).toBe(404);
-  });
-
-  it("存在しない task ID を更新すると 404 を返す", async () => {
-    const token = await loginAsSeedUser();
-    const project = await getSeedProject(token);
-
-    const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token, {
-      method: "PATCH",
-      body: JSON.stringify(createTaskPayload(project.id))
-    });
-
-    expect(response.status).toBe(404);
-  });
-
-  it("存在しない task ID を削除すると 404 を返す", async () => {
-    const token = await loginAsSeedUser();
-
-    const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token, {
-      method: "DELETE"
-    });
-
-    expect(response.status).toBe(404);
-  });
-});
-
-describe("Task API Create Validation", () => {
-  it.each(invalidTaskPayloadCases)(
-    "$name を指定した場合、400 Bad Request を返す",
-    async ({ override }) => {
+  describe("異常系", () => {
+    it("不正な payload で 400 を返す", async () => {
       const token = await loginAsSeedUser();
-      const project = await getSeedProject(token);
 
       const response = await apiRequestWithToken("/users/tasks", token, {
         method: "POST",
-        body: JSON.stringify(createTaskPayload(project.id, override))
+        body: JSON.stringify({
+          title: ""
+        })
       });
 
       expect(response.status).toBe(400);
-    }
-  );
+    });
+
+    describe("バリデーション", () => {
+      it.each(invalidTaskPayloadCases)(
+        "$name を指定した場合、400 Bad Request を返す",
+        async ({ override }) => {
+          const token = await loginAsSeedUser();
+          const project = await getSeedProject(token);
+
+          const response = await apiRequestWithToken("/users/tasks", token, {
+            method: "POST",
+            body: JSON.stringify(createTaskPayload(project.id, override))
+          });
+
+          expect(response.status).toBe(400);
+        }
+      );
+    });
+  });
 });
 
-describe("Task API Update Validation", () => {
-  it.each(invalidTaskPayloadCases)(
-    "$name を指定した場合、400 Bad Request を返す",
-    async ({ override }) => {
+describe("GET /users/tasks/:id", () => {
+  describe("正常系", () => {
+    it("作成済みタスク ID で取得できる", async () => {
       const token = await loginAsSeedUser();
       const project = await getSeedProject(token);
       const task = await createTask(token, project.id);
 
       try {
-        const response = await apiRequestWithToken(`/users/tasks/${task.id}`, token, {
-          method: "PATCH",
-          body: JSON.stringify(createTaskPayload(project.id, override))
-        });
+        const response = await apiRequestWithToken<{ data: unknown }>(
+          `/users/tasks/${task.id}`,
+          token
+        );
 
-        expect(response.status).toBe(400);
+        expect(response.status).toBe(200);
+        expectTask(response.body.data);
+        expect(response.body.data).toEqual(
+          expect.objectContaining({
+            id: task.id,
+            title: task.title
+          })
+        );
       } finally {
         await deleteTask(token, task.id);
       }
-    }
-  );
+    });
+  });
+
+  describe("異常系", () => {
+    it("存在しない task ID は 404 を返す", async () => {
+      const token = await loginAsSeedUser();
+
+      const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token);
+
+      expect(response.status).toBe(404);
+    });
+  });
+});
+
+describe("PATCH /users/tasks/:id", () => {
+  describe("正常系", () => {
+    it("作成済みタスク ID と正しい payload で更新できる", async () => {
+      const token = await loginAsSeedUser();
+      const project = await getSeedProject(token);
+      const task = await createTask(token, project.id);
+
+      try {
+        const response = await apiRequestWithToken<{ data: unknown }>(
+          `/users/tasks/${task.id}`,
+          token,
+          {
+            method: "PATCH",
+            body: JSON.stringify({
+              title: `${task.title} updated`,
+              kind: "task",
+              description: "Updated by black-box API test.",
+              status: "completed",
+              projectId: project.id,
+              startingAt: "2024-01-01",
+              deadline: "2024-12-31"
+            })
+          }
+        );
+
+        expect(response.status).toBe(200);
+        expectTask(response.body.data);
+        expect(response.body.data).toEqual(
+          expect.objectContaining({
+            id: task.id,
+            title: `${task.title} updated`,
+            description: "Updated by black-box API test.",
+            status: "completed"
+          })
+        );
+      } finally {
+        await deleteTask(token, task.id);
+      }
+    });
+  });
+
+  describe("異常系", () => {
+    it("存在しない task ID は 404 を返す", async () => {
+      const token = await loginAsSeedUser();
+      const project = await getSeedProject(token);
+
+      const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token, {
+        method: "PATCH",
+        body: JSON.stringify(createTaskPayload(project.id))
+      });
+
+      expect(response.status).toBe(404);
+    });
+
+    describe("バリデーション", () => {
+      it.each(invalidTaskPayloadCases)(
+        "$name を指定した場合、400 Bad Request を返す",
+        async ({ override }) => {
+          const token = await loginAsSeedUser();
+          const project = await getSeedProject(token);
+          const task = await createTask(token, project.id);
+
+          try {
+            const response = await apiRequestWithToken(`/users/tasks/${task.id}`, token, {
+              method: "PATCH",
+              body: JSON.stringify(createTaskPayload(project.id, override))
+            });
+
+            expect(response.status).toBe(400);
+          } finally {
+            await deleteTask(token, task.id);
+          }
+        }
+      );
+    });
+  });
+});
+
+describe("DELETE /users/tasks/:id", () => {
+  describe("正常系", () => {
+    it("作成済みタスク ID で削除できる", async () => {
+      const token = await loginAsSeedUser();
+      const project = await getSeedProject(token);
+      const task = await createTask(token, project.id);
+
+      const response = await apiRequestWithToken<{ data: unknown }>(
+        `/users/tasks/${task.id}`,
+        token,
+        {
+          method: "DELETE"
+        }
+      );
+
+      expect(response.status).toBe(200);
+      expectTask(response.body.data);
+      expect(response.body.data).toEqual(
+        expect.objectContaining({
+          id: task.id
+        })
+      );
+    });
+  });
+
+  describe("異常系", () => {
+    it("存在しない task ID は 404 を返す", async () => {
+      const token = await loginAsSeedUser();
+
+      const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token, {
+        method: "DELETE"
+      });
+
+      expect(response.status).toBe(404);
+    });
+  });
 });
