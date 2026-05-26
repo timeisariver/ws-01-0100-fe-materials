@@ -89,6 +89,25 @@ async function deleteTask(token: string, taskId: string): Promise<void> {
   });
 }
 
+async function getTaskPage(token: string, page: number): Promise<Task> {
+  const response = await apiRequestWithToken<{ data: unknown[]; pageInfo: unknown }>(
+    `/users/tasks?limit=1&page=${page}&status=scheduled`,
+    token
+  );
+
+  expect(response.status).toBe(200);
+  expect(response.body.data).toHaveLength(1);
+  expectPageInfo(response.body.pageInfo, { limit: 1, page });
+  expectTask(response.body.data[0]);
+  expect(response.body.data[0]).toEqual(
+    expect.objectContaining({
+      status: "scheduled"
+    })
+  );
+
+  return response.body.data[0];
+}
+
 describe("Task API", () => {
   it("タスク一覧を status で絞り込める", async () => {
     const token = await loginAsSeedUser();
@@ -111,6 +130,28 @@ describe("Task API", () => {
         })
       );
     });
+  });
+
+  it("タスク一覧を 3 ページに分けて取得できる", async () => {
+    const token = await loginAsSeedUser();
+    const project = await getSeedProject(token);
+    const createdTasks = await Promise.all([
+      createTask(token, project.id),
+      createTask(token, project.id),
+      createTask(token, project.id)
+    ]);
+
+    try {
+      const tasks = await Promise.all([
+        getTaskPage(token, 1),
+        getTaskPage(token, 2),
+        getTaskPage(token, 3)
+      ]);
+
+      expect(new Set(tasks.map((task) => task.id)).size).toBe(tasks.length);
+    } finally {
+      await Promise.all(createdTasks.map((task) => deleteTask(token, task.id)));
+    }
   });
 
   it("タスクを作成し、取得・更新・削除できる", async () => {
@@ -219,10 +260,32 @@ describe("Task API", () => {
     expect(response.status).toBe(400);
   });
 
-  it("存在しない task ID は 404 を返す", async () => {
+  it("存在しない task ID を取得すると 404 を返す", async () => {
     const token = await loginAsSeedUser();
 
     const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token);
+
+    expect(response.status).toBe(404);
+  });
+
+  it("存在しない task ID を更新すると 404 を返す", async () => {
+    const token = await loginAsSeedUser();
+    const project = await getSeedProject(token);
+
+    const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token, {
+      method: "PATCH",
+      body: JSON.stringify(createTaskPayload(project.id))
+    });
+
+    expect(response.status).toBe(404);
+  });
+
+  it("存在しない task ID を削除すると 404 を返す", async () => {
+    const token = await loginAsSeedUser();
+
+    const response = await apiRequestWithToken(`/users/tasks/${missingTaskId}`, token, {
+      method: "DELETE"
+    });
 
     expect(response.status).toBe(404);
   });

@@ -107,6 +107,9 @@ CRUD の検証対象タスクは、テスト実行中に API から作成しま�
   - `200` を返す
   - `scheduled` のタスクを 1 件以上返す
   - レスポンス `pageInfo` に `totalCount`, `limit`, `page`, `hasNext`, `hasPrevious` を含む
+- `GET /users/tasks?limit=1&page=1..3&status=scheduled`
+  - page 1, 2, 3 の各レスポンス `data` は 1 件
+  - page 1, 2, 3 の task id は重複しない
 - `POST /users/tasks`
   - 正しい payload で `201` を返す
   - 不正な payload で `400` を返す
@@ -119,9 +122,11 @@ CRUD の検証対象タスクは、テスト実行中に API から作成しま�
   - 存在しない UUID 形式の ID は `404` を返す
 - `PATCH /users/tasks/:id`
   - 作成済みタスク ID と正しい payload で `200` を返す
+  - 存在しない UUID 形式の ID は `404` を返す
   - 不正な `status` で `400` を返す
   - 存在しない `projectId` で `400` を返す
   - 不正な `kind` で `400` を返す
   - 不正な `deadline` で `400` を返す
 - `DELETE /users/tasks/:id`
   - 作成済みタスク ID で `200` を返す
+  - 存在しない UUID 形式の ID は `404` を返す
