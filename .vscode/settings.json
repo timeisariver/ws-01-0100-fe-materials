@@ -1,0 +1,7 @@
+{
+  // Prettier の設定ファイル(.prettierrc)があるディレクトリのみフォーマットする。
+  // 現状 .prettierrc を持つのは 0200-js-base のみなので、自動フォーマットはそこだけに効く。
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.requireConfig": true
+}
