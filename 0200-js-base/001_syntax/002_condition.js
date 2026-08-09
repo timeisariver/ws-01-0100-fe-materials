@@ -5,8 +5,7 @@
  *    と出力するメソッドを実装してください
  *
  */
-function printMessageByAge(age) {
-}
+function printMessageByAge(age) {}
 
 /**
  *  2.2 引数から与えられた時間が
@@ -16,8 +15,7 @@ function printMessageByAge(age) {
  *    と出力するメソッドを実装してください
  *
  */
-function greeding(hour) {
-}
+function greeding(hour) {}
 
 /**
  *  2.3 引数から与えられた数字に対応する曜日を
@@ -32,11 +30,10 @@ function greeding(hour) {
  *
  */
 
-function getDay(day) {
-}
+function getDay(day) {}
 
 module.exports = {
   printMessageByAge,
   greeding,
-  getDay
-}
+  getDay,
+};

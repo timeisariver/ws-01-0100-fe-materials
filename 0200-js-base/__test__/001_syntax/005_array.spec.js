@@ -12,8 +12,8 @@ afterEach(() => (console.log = origin));
 describe('printArray', () => {
   let outputs = [];
   beforeEach(() => {
-    outputs = []
-    console.log = logMock(outputs)
+    outputs = [];
+    console.log = logMock(outputs);
   });
   test('正常系', () => {
     printArray([1, 2, 3, 4, 5]);

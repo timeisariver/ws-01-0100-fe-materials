@@ -1,12 +1,10 @@
-
 /**
  *  7.1 JSのfilter メソッドを自分で実装してみましょう。
  *      第一引数に配列、第二引数にコールバックが渡されるとして filter メソッドは、使わずに実装してください、
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function filter(array, cb) {
-}
+function filter(array, cb) {}
 
 /**
  *  7.2 JSの find メソッドを自分で実装してみましょう。
@@ -14,8 +12,7 @@ function filter(array, cb) {
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function find(array, cb) {
-}
+function find(array, cb) {}
 
 /**
  *  7.3 JSの findIndex メソッドを自分で実装してみましょう。
@@ -23,8 +20,7 @@ function find(array, cb) {
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function findIndex(array, cb) {
-}
+function findIndex(array, cb) {}
 
 /**
  *  7.4 JSの some メソッドを自分で実装してみましょう。
@@ -32,8 +28,7 @@ function findIndex(array, cb) {
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function some(array, cb) {
-}
+function some(array, cb) {}
 
 /**
  *  7.5 JSの every メソッドを自分で実装してみましょう。
@@ -41,8 +36,7 @@ function some(array, cb) {
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function every(array, cb) {
-}
+function every(array, cb) {}
 
 /**
  *  7.6 JSの map メソッドを自分で実装してみましょう。
@@ -51,8 +45,7 @@ function every(array, cb) {
  *
  */
 
-function map(array, cb) {
-}
+function map(array, cb) {}
 
 /**
  *  7.7 JSの forEach メソッドを自分で実装してみましょう。
@@ -61,8 +54,7 @@ function map(array, cb) {
  *
  */
 
-function forEach(array, cb) {
-}
+function forEach(array, cb) {}
 
 module.exports = {
   filter,
@@ -71,5 +63,5 @@ module.exports = {
   some,
   every,
   map,
-  forEach
-}
+  forEach,
+};

@@ -5,7 +5,7 @@ const {
   countStr,
   isPalindrome,
   isPrime,
-  sumWithout4andNext
+  sumWithout4andNext,
 } = require('../../003_practice/002_medium');
 
 const origin = console.log;
@@ -64,4 +64,3 @@ describe('sumWithout4andNext', () => {
     expect(sumWithout4andNext([4, 4, 1, 2])).toEqual(2);
   });
 });
-

@@ -26,31 +26,38 @@ describe('fibonacci', () => {
 
 describe('flatten', () => {
   test('normal', () => {
-    expect(flatten([[[1, 2], [3, 4, [5, 6]]], [[7, 8]]])).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(
+      flatten([
+        [
+          [1, 2],
+          [3, 4, [5, 6]],
+        ],
+        [[7, 8]],
+      ]),
+    ).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
     expect(flatten([[[[[[[[1, 2, [3, 4]]]]]]]]])).toEqual([1, 2, 3, 4]);
   });
 });
-
 
 describe('fileSize', () => {
   const data1 = {
     type: 'file',
     size: 10,
-  }
+  };
   const data2 = {
     type: 'folder',
     size: 0,
     children: [
       {
         type: 'file',
-        size: 10
+        size: 10,
       },
       {
         type: 'file',
-        size: 5
+        size: 5,
       },
-    ]
-  }
+    ],
+  };
   const data3 = {
     type: 'folder',
     size: 0,

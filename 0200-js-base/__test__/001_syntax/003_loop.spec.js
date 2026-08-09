@@ -12,8 +12,8 @@ afterEach(() => (console.log = origin));
 describe('printOneToTen', () => {
   let outputs = [];
   beforeEach(() => {
-    outputs = []
-    console.log = logMock(outputs)
+    outputs = [];
+    console.log = logMock(outputs);
   });
   test('正常系', () => {
     printOneToTen();
@@ -35,8 +35,8 @@ describe('printOneToTen', () => {
 describe('printOneToTenDesc', () => {
   let outputs = [];
   beforeEach(() => {
-    outputs = []
-    console.log = logMock(outputs)
+    outputs = [];
+    console.log = logMock(outputs);
   });
   test('正常系', () => {
     printOneToTenDesc();
@@ -58,8 +58,8 @@ describe('printOneToTenDesc', () => {
 describe('printOneToTenWhile', () => {
   let outputs = [];
   beforeEach(() => {
-    outputs = []
-    console.log = logMock(outputs)
+    outputs = [];
+    console.log = logMock(outputs);
   });
   test('正常系', () => {
     printOneToTenWhile();
@@ -81,8 +81,8 @@ describe('printOneToTenWhile', () => {
 describe('printOneToTenWhileDesc', () => {
   let outputs = [];
   beforeEach(() => {
-    outputs = []
-    console.log = logMock(outputs)
+    outputs = [];
+    console.log = logMock(outputs);
   });
   test('正常系', () => {
     printOneToTenWhileDesc();

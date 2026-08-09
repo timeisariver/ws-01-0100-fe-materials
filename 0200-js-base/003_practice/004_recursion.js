@@ -15,8 +15,7 @@
  *    30 => 55
  */
 
-function sumSequence (n, sum = 0) {
-}
+function sumSequence(n, sum = 0) {}
 
 /**
  *  4.2 フィボナッチ数
@@ -28,8 +27,7 @@ function sumSequence (n, sum = 0) {
  *    input: 10 => [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
  */
 
-function fibonacci (num) {
-}
+function fibonacci(num) {}
 
 /**
  *  4.3 多次元配列を一次元配列に変換する関数を実装してください。
@@ -42,9 +40,7 @@ function fibonacci (num) {
  *
  */
 
-function flatten (data) {
-}
-
+function flatten(data) {}
 
 /**
  *  4.4 ディレクトリに含まれるファイルサイズの合計
@@ -98,13 +94,11 @@ function flatten (data) {
  *    => 38
  */
 
-function fileSize (node, sum = 0) {
-}
-
+function fileSize(node, sum = 0) {}
 
 module.exports = {
   sumSequence,
   fibonacci,
   flatten,
-  fileSize
-}
+  fileSize,
+};

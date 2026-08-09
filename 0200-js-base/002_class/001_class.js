@@ -1,4 +1,3 @@
-
 /**
  *  クラスの定義
  *
@@ -21,20 +20,19 @@
  *
  */
 
-class Person {
-}
+class Person {}
 
-function main () {
-  const person = new Person('ichiro', 54, 'I like to play baseball')
-  person.sayHi()
-  Person.describe()
-  person.isUnderage
+function main() {
+  const person = new Person('ichiro', 54, 'I like to play baseball');
+  person.sayHi();
+  Person.describe();
+  person.isUnderage;
 
-  person.bio = 'I like to play basketball'
-  return person.toString()
+  person.bio = 'I like to play basketball';
+  return person.toString();
 }
 
 module.exports = {
   Person,
-  main
-}
+  main,
+};
