@@ -5,8 +5,7 @@
  *
  */
 
-function flatten(list) {
-}
+function flatten(list) {}
 
 /**
  *  3.2 id の配列を各要素がキーの値が true なオブジェクトに変換する関数を実装してください。
@@ -25,8 +24,7 @@ function flatten(list) {
  *
  */
 
-function toMap(list) {
-}
+function toMap(list) {}
 
 /**
  *  3.3 オブジェクトが引数で与えられる場合に、それぞれの key と value を順番に配列として返す関数を実装してください。
@@ -37,8 +35,7 @@ function toMap(list) {
  *
  */
 
-function toList(obj) {
-}
+function toList(obj) {}
 
 /**
  *  3.4 オブジェクトの配列のid だけを取り出して配列として返す関数を実装してください。
@@ -57,8 +54,7 @@ function toList(obj) {
  *
  */
 
-function ids(obj) {
-}
+function ids(obj) {}
 
 /**
  *  3.5 二つの配列をマージする関数を実装してください。
@@ -73,8 +69,7 @@ function ids(obj) {
  *
  */
 
-function merge(a, b) {
-}
+function merge(a, b) {}
 
 /**
  *  3.6 二つの配列のどちらにも存在する要素を返す関数を実装してください。
@@ -88,8 +83,7 @@ function merge(a, b) {
  *
  */
 
-function intersection(a, b) {
-}
+function intersection(a, b) {}
 
 /**
  *  3.7 二つのオブジェクトの配列をマージする関数を実装してください。
@@ -104,8 +98,7 @@ function intersection(a, b) {
  *
  */
 
-function mergeObjOfArray(a, b) {
-}
+function mergeObjOfArray(a, b) {}
 
 /**
  *  3.8 渡されたデータの合計(count プロパティの和) を求める関数を実装してください。
@@ -119,8 +112,7 @@ function mergeObjOfArray(a, b) {
  *
  */
 
-function sum(data) {
-}
+function sum(data) {}
 
 module.exports = {
   flatten,
@@ -130,5 +122,5 @@ module.exports = {
   merge,
   intersection,
   mergeObjOfArray,
-  sum
-}
+  sum,
+};

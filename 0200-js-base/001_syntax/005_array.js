@@ -3,8 +3,7 @@
  *
  */
 
-function printArray(array) {
-}
+function printArray(array) {}
 
 /**
  *  5.2 関数内で全ての曜日を配列として宣言して返却するメソッドを実装してください
@@ -21,8 +20,7 @@ function printArray(array) {
  *      ]
  *
  */
-function getDays() {
-}
+function getDays() {}
 
 /**
  *  5.3 配列に特定の数があった場合にtrue、そうでない場合にfalseを返す関数を実装してください
@@ -34,8 +32,7 @@ function getDays() {
  *
  */
 
-function findNum(array, num) {
-}
+function findNum(array, num) {}
 
 /**
  *  5.4 配列に重複した要素があれば true、そうでなければ false を返す関数を実装してください
@@ -47,12 +44,11 @@ function findNum(array, num) {
  *
  */
 
-function isDuplicate(array) {
-}
+function isDuplicate(array) {}
 
 module.exports = {
   printArray,
   getDays,
   findNum,
-  isDuplicate
-}
+  isDuplicate,
+};

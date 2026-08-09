@@ -207,5 +207,5 @@ class Queue {
 module.exports = {
   List,
   Stack,
-  Queue
+  Queue,
 };

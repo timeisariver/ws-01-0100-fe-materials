@@ -12,7 +12,7 @@ const {
   seq,
   omitSeq,
   filter,
-  fizzBuzz
+  fizzBuzz,
 } = require('../../003_practice/001_easy');
 
 const origin = console.log;
@@ -45,7 +45,11 @@ describe('findIndex', () => {
 describe('split', () => {
   test('normal', () => {
     expect(split('library', 'a')).toEqual(['libr', 'ry']);
-    expect(split('banana,apple,pineapple', ',')).toEqual(['banana', 'apple', 'pineapple']);
+    expect(split('banana,apple,pineapple', ',')).toEqual([
+      'banana',
+      'apple',
+      'pineapple',
+    ]);
   });
 });
 
@@ -73,32 +77,41 @@ describe('size', () => {
 });
 
 describe('minMax', () => {
-  let outputs = []
+  let outputs = [];
   beforeEach(() => {
-    outputs = []
-    console.log = logMock(outputs)
+    outputs = [];
+    console.log = logMock(outputs);
   });
   test('normal', () => {
-    minMax([1, 9])
-    minMax([-1, 1, 5, 7, 9])
-    minMax([2, 2, 2, 2])
-    minMax([])
-    expect(outputs[0]).toEqual("max: 9, min: 1");
-    expect(outputs[1]).toEqual("max: 9, min: -1");
-    expect(outputs[2]).toEqual("max: 2, min: 2");
+    minMax([1, 9]);
+    minMax([-1, 1, 5, 7, 9]);
+    minMax([2, 2, 2, 2]);
+    minMax([]);
+    expect(outputs[0]).toEqual('max: 9, min: 1');
+    expect(outputs[1]).toEqual('max: 9, min: -1');
+    expect(outputs[2]).toEqual('max: 2, min: 2');
     expect(outputs.length).toEqual(3);
   });
 });
 
 describe('concat', () => {
-  let outputs = []
+  let outputs = [];
   beforeEach(() => {
-    outputs = []
-    console.log = logMock(outputs)
+    outputs = [];
+    console.log = logMock(outputs);
   });
   test('normal', () => {
     expect(concat([1, 3, 7, 9], [3, 4])).toEqual([1, 3, 7, 9, 3, 4]);
-    expect(concat(['h', 'o', 'm', 'e'], ['w', 'o', 'r', 'k'])).toEqual(['h', 'o', 'm', 'e', 'w', 'o', 'r', 'k']);
+    expect(concat(['h', 'o', 'm', 'e'], ['w', 'o', 'r', 'k'])).toEqual([
+      'h',
+      'o',
+      'm',
+      'e',
+      'w',
+      'o',
+      'r',
+      'k',
+    ]);
     expect(concat([], [])).toEqual([]);
   });
 });
@@ -127,29 +140,28 @@ describe('filter', () => {
 });
 
 describe('fizzBuzz', () => {
-  let outputs = []
+  let outputs = [];
   beforeEach(() => {
-    outputs = []
-    console.log = logMock(outputs)
+    outputs = [];
+    console.log = logMock(outputs);
   });
   test('normal', () => {
-    fizzBuzz()
+    fizzBuzz();
     for (let i = 1; i < 100; i++) {
-      if ((i % 5 === 0) && (i % 3 === 0)) {
-        expect(outputs[i-1]).toEqual(`${i} FizzBuzz`);
-        continue
+      if (i % 5 === 0 && i % 3 === 0) {
+        expect(outputs[i - 1]).toEqual(`${i} FizzBuzz`);
+        continue;
       }
 
       if (i % 3 === 0) {
-        expect(outputs[i-1]).toEqual(`${i} Fizz`);
-        continue
+        expect(outputs[i - 1]).toEqual(`${i} Fizz`);
+        continue;
       }
 
       if (i % 5 === 0) {
-        expect(outputs[i-1]).toEqual(`${i} Buzz`);
-        continue
+        expect(outputs[i - 1]).toEqual(`${i} Buzz`);
+        continue;
       }
     }
   });
 });
-
