@@ -4,7 +4,13 @@
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function filter(array, cb) {}
+function filter(array, cb) {
+  const result = [];
+  for (let index = 0; index < array.length; index++) {
+    if (cb(array[index], index)) result.push(array[index]);
+  }
+  return result;
+}
 
 /**
  *  7.2 JSの find メソッドを自分で実装してみましょう。
@@ -12,7 +18,11 @@ function filter(array, cb) {}
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function find(array, cb) {}
+function find(array, cb) {
+  for (let index = 0; index < array.length; index++) {
+    if (cb(array[index], index)) return array[index];
+  }
+}
 
 /**
  *  7.3 JSの findIndex メソッドを自分で実装してみましょう。
@@ -20,7 +30,12 @@ function find(array, cb) {}
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function findIndex(array, cb) {}
+function findIndex(array, cb) {
+  for (let index = 0; index < array.length; index++) {
+    if (cb(array[index], index)) return index;
+  }
+  return -1;
+}
 
 /**
  *  7.4 JSの some メソッドを自分で実装してみましょう。
@@ -28,7 +43,12 @@ function findIndex(array, cb) {}
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function some(array, cb) {}
+function some(array, cb) {
+  for (let index = 0; index < array.length; index++) {
+    if (cb(array[index], index)) return true;
+  }
+  return false;
+}
 
 /**
  *  7.5 JSの every メソッドを自分で実装してみましょう。
@@ -36,7 +56,12 @@ function some(array, cb) {}
  *      また、コールバック関数の第一引数には、各要素とそのインデックスが渡されるように実装してください。
  */
 
-function every(array, cb) {}
+function every(array, cb) {
+  for (let index = 0; index < array.length; index++) {
+    if (!cb(array[index], index)) return false;
+  }
+  return true;
+}
 
 /**
  *  7.6 JSの map メソッドを自分で実装してみましょう。
@@ -45,7 +70,13 @@ function every(array, cb) {}
  *
  */
 
-function map(array, cb) {}
+function map(array, cb) {
+  const result = [];
+  for (let index = 0; index < array.length; index++) {
+    result.push(cb(array[index], index));
+  }
+  return result;
+}
 
 /**
  *  7.7 JSの forEach メソッドを自分で実装してみましょう。
@@ -54,7 +85,12 @@ function map(array, cb) {}
  *
  */
 
-function forEach(array, cb) {}
+function forEach(array, cb) {
+  for (let index = 0; index < array.length; index++) {
+    cb(array[index], index);
+  }
+  return;
+}
 
 module.exports = {
   filter,
