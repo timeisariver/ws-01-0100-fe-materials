@@ -133,7 +133,7 @@ function assignNumber(persons) {
  */
 
 function isDuplicate(array) {
-  const obj = {};
+  const obj = Object.create(null);
 
   for (const value of array) {
     if (obj[value]) {
