@@ -115,7 +115,7 @@ function assignNumber(persons) {
   const personsObj = {};
 
   persons.forEach((person) => {
-    personsObj.person = Math.floor(Math.random() * 10) + 1;
+    personsObj[person] = Math.floor(Math.random() * 10) + 1;
   });
 
   return personsObj;
