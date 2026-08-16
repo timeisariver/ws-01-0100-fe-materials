@@ -12,9 +12,11 @@
 
 function length(str) {
   let count = 0;
+
   for (const _ of str) {
     count++;
   }
+
   return count;
 }
 
@@ -31,9 +33,11 @@ function length(str) {
  */
 function reverse(str) {
   let reversedWord = '';
+
   for (let i = 1; i <= str.length; i++) {
     reversedWord += str.at(-i);
   }
+
   return reversedWord;
 }
 
@@ -53,6 +57,7 @@ function findIndex(str, char) {
   for (let i = 0; i < str.length; i++) {
     if (str[i] === char) return i;
   }
+
   return -1;
 }
 
@@ -71,6 +76,7 @@ function findIndex(str, char) {
 function split(a, b) {
   let chars = '';
   const arr = [];
+
   for (const char of a) {
     if (char === b) {
       arr.push(chars);
@@ -80,6 +86,7 @@ function split(a, b) {
     }
   }
   arr.push(chars);
+
   return arr;
 }
 
@@ -97,9 +104,11 @@ function split(a, b) {
 
 function sum(array) {
   let answer = 0;
+
   for (const item of array) {
     answer += item;
   }
+
   return answer;
 }
 
@@ -121,9 +130,11 @@ function average(array) {
   if (array.length === 0) return 0;
 
   let answer = 0;
+
   for (let i = 0; i < array.length; i++) {
     answer += array[i];
   }
+
   answer = Math.floor(answer / array.length);
 
   return answer;
@@ -172,9 +183,11 @@ function concat(a, b) {
 
 function size(array) {
   let count = 0;
+
   for (const _ of array) {
     count++;
   }
+
   return count;
 }
 
