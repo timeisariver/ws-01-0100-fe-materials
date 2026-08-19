@@ -51,7 +51,10 @@ function toMap(list) {
  *
  */
 
-function toList(obj) {}
+function toList(obj) {
+  const entries = Object.entries(obj);
+  return flatten(entries);
+}
 
 /**
  *  3.4 オブジェクトの配列のid だけを取り出して配列として返す関数を実装してください。
@@ -87,7 +90,11 @@ function ids(obj) {
  *
  */
 
-function merge(a, b) {}
+function merge(a, b) {
+  const combined = [...a, ...b];
+  const unique = new Set(combined);
+  return [...unique];
+}
 
 /**
  *  3.6 二つの配列のどちらにも存在する要素を返す関数を実装してください。
@@ -101,7 +108,14 @@ function merge(a, b) {}
  *
  */
 
-function intersection(a, b) {}
+function intersection(a, b) {
+  // こちらも正解
+  // return a.filter((item) => b.includes(item));
+
+  // より良いコード
+  const bSet = new Set(b);
+  return a.filter((item) => bSet.has(item));
+}
 
 /**
  *  3.7 二つのオブジェクトの配列をマージする関数を実装してください。
@@ -116,7 +130,17 @@ function intersection(a, b) {}
  *
  */
 
-function mergeObjOfArray(a, b) {}
+function mergeObjOfArray(a, b) {
+  const merged = [...a, ...b];
+
+  const map = merged.reduce((acc, item) => {
+    const prev = acc.get(item.id);
+    acc.set(item.id, prev ? { ...prev, ...item } : item);
+    return acc;
+  }, new Map());
+
+  return [...map.values()];
+}
 
 /**
  *  3.8 渡されたデータの合計(count プロパティの和) を求める関数を実装してください。
@@ -130,7 +154,21 @@ function mergeObjOfArray(a, b) {}
  *
  */
 
-function sum(data) {}
+function sum(data) {
+  if (Array.isArray(data)) {
+    return data.reduce((acc, item) => {
+      return acc + sum(item);
+    }, 0);
+  }
+
+  if (typeof data === 'object') {
+    return Object.entries(data).reduce((acc, [key, value]) => {
+      return acc + (key === 'count' ? value : sum(value));
+    }, 0);
+  }
+
+  return 0;
+}
 
 module.exports = {
   flatten,
