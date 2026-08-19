@@ -5,7 +5,17 @@
  *
  */
 
-function flatten(list) {}
+function flatten(list) {
+  return list.reduce((result, item) => {
+    if (Array.isArray(item)) {
+      result.push(...item);
+    } else {
+      result.push(item);
+    }
+
+    return result;
+  }, []);
+}
 
 /**
  *  3.2 id の配列を各要素がキーの値が true なオブジェクトに変換する関数を実装してください。
@@ -24,7 +34,13 @@ function flatten(list) {}
  *
  */
 
-function toMap(list) {}
+function toMap(list) {
+  return list.reduce((acc, digit) => {
+    // ドット記法だとプロパティ名が digit という文字列そのものになってしまうので、変数の中身をキーにするにはブラケット記法が必要
+    acc[digit] = true;
+    return acc;
+  }, {});
+}
 
 /**
  *  3.3 オブジェクトが引数で与えられる場合に、それぞれの key と value を順番に配列として返す関数を実装してください。
@@ -54,7 +70,9 @@ function toList(obj) {}
  *
  */
 
-function ids(obj) {}
+function ids(obj) {
+  return obj.map((item) => item.id);
+}
 
 /**
  *  3.5 二つの配列をマージする関数を実装してください。
