@@ -1,0 +1,37 @@
+@use '../shared/variable' as v
+
+// lib.js の checkbox() が生成する <label class="checkbox">
+.checkbox
+  position: relative
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  flex-shrink: 0
+  width: 20px
+  height: 20px
+  background-color: v.$surface-color
+  border: 1.5px solid v.$border-color-strong
+  border-radius: v.$radius-sm
+  cursor: pointer
+  transition: background-color 0.2s, border-color 0.2s
+
+  &:hover
+    border-color: v.$primary-color
+
+  // 本物のチェックボックスは透明にして重ねる
+  // _base.sass の input[type='checkbox'] より優先させるため入れ子にする
+  .checkbox__input
+    position: absolute
+    width: 100%
+    height: 100%
+    margin: 0
+    opacity: 0
+    cursor: pointer
+
+  &--checked
+    background-color: v.$primary-color
+    border-color: v.$primary-color
+
+    .icon--check
+      opacity: 1
+      transform: scale(1)

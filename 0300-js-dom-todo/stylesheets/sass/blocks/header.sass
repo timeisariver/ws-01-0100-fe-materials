@@ -1,0 +1,19 @@
+@use '../shared/_base.sass' as b
+@use '../shared/variable' as v
+
+.header
+  position: sticky
+  top: 0
+  z-index: 10
+  padding: 16px 32px
+  background-color: rgba(v.$surface-color, 0.85)
+  backdrop-filter: blur(8px)
+  border-bottom: 1px solid v.$border-color
+
+  &__text
+    display: flex
+    align-items: center
+    gap: 8px
+    font-size: 16px
+    font-weight: 700
+    letter-spacing: 0.04em

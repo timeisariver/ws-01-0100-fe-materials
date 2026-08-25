@@ -1,0 +1,109 @@
+@use '../shared/_base.sass' as b
+@use '../shared/variable' as v
+
+.content
+  @extend %card
+  display: grid
+  gap: 16px
+
+  &__completed
+    display: flex
+    align-items: center
+    justify-content: flex-end
+    gap: 8px
+    font-size: 13px
+    color: v.$font-color-weak
+    cursor: pointer
+    user-select: none
+
+    &:hover
+      color: v.$primary-color
+
+  &__table
+    width: 100%
+    table-layout: fixed
+
+  &__table-thead
+    th
+      padding: 0 12px 12px
+      font-size: 12px
+      font-weight: 600
+      color: v.$font-color-weak
+      text-align: left
+      border-bottom: 1px solid v.$border-color
+
+      &:nth-child(1)
+        width: 56px
+
+      &:nth-child(3)
+        width: 160px
+
+      &:nth-child(4)
+        width: 56px
+
+  &__table-row
+    transition: background-color 0.2s
+
+    &:hover
+      background-color: v.$hover-color
+
+    &:last-child td
+      border-bottom: none
+
+    td
+      padding: 12px
+      font-size: 14px
+      vertical-align: middle
+      border-bottom: 1px solid v.$border-color
+      overflow-wrap: anywhere
+
+      &:nth-child(1),
+      &:last-child
+        text-align: center
+
+    // 普段は文字に見せて、ホバー・フォーカスで入力欄に見せる
+    input[type='date']
+      position: relative
+      width: 100%
+      padding: 4px 6px
+      font-size: 14px
+      color: inherit
+      background-color: transparent
+      border: 1px solid transparent
+      border-radius: v.$radius-sm
+      cursor: pointer
+      transition: background-color 0.2s, border-color 0.2s
+
+      &:hover
+        background-color: v.$surface-color
+        border-color: v.$border-color-strong
+
+      &:focus
+        background-color: v.$surface-color
+        border-color: v.$primary-color
+        outline: 2px solid v.$primary-color
+        outline-offset: 1px
+
+      // 入力欄のどこをクリックしてもカレンダーが開くようにする
+      &::-webkit-calendar-picker-indicator
+        position: absolute
+        inset: 0
+        width: 100%
+        height: 100%
+        margin: 0
+        padding: 0
+        opacity: 0
+        cursor: pointer
+
+    // 完了済みタスク
+    &--completed
+      color: v.$font-color-weak
+
+      td:nth-child(2)
+        text-decoration: line-through
+        opacity: 0.6
+
+    // 期限切れタスク
+    &--expired
+      td:nth-child(3)
+        color: v.$danger-color
