@@ -37,17 +37,13 @@
           <input type="checkbox" class="js-show-completed" />
           <p>完了タスクを表示</p>
         </label>
-        <table class="content__table">
-          <thead class="content__table-thead">
-            <tr>
-              <th>完了</th>
-              <th>タスク</th>
-              <th>期限日</th>
-              <th>削除</th>
-            </tr>
-          </thead>
-          <tbody class="content__table-body js-list-container"></tbody>
-        </table>
+        <div class="content__head">
+          <div class="content__head-item">完了</div>
+          <div class="content__head-item content__head-item--name">タスク</div>
+          <div class="content__head-item">期限日</div>
+          <div class="content__head-item">削除</div>
+        </div>
+        <div class="content__list js-list-container"></div>
       </div>
     </main>
     <script src="js/lib.js"></script>

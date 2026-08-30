@@ -1,6 +1,13 @@
 @use '../shared/_base.sass' as b
 @use '../shared/variable' as v
 
+// ヘッダー行とタスク行で列幅を共有する
+%row
+  display: grid
+  grid-template-columns: 56px 1fr 160px 56px
+  align-items: center
+  gap: 12px
+
 .content
   @extend %card
   display: grid
@@ -19,91 +26,96 @@
     &:hover
       color: v.$primary-color
 
-  &__table
-    width: 100%
-    table-layout: fixed
+  // 見出し行。index.html に静的に書いてある
+  &__head
+    @extend %row
+    padding: 0 12px 12px
+    border-bottom: 1px solid v.$border-color
 
-  &__table-thead
-    th
-      padding: 0 12px 12px
-      font-size: 12px
-      font-weight: 600
-      color: v.$font-color-weak
+  &__head-item
+    font-size: 12px
+    font-weight: 600
+    color: v.$font-color-weak
+    text-align: center
+
+    &--name
       text-align: left
-      border-bottom: 1px solid v.$border-color
 
-      &:nth-child(1)
-        width: 56px
+  // js-list-container。ここに JS がタスク行を追加する
+  &__list
+    display: grid
 
-      &:nth-child(3)
-        width: 160px
-
-      &:nth-child(4)
-        width: 56px
-
-  &__table-row
+  // タスク1件分の行
+  &__row
+    @extend %row
+    padding: 12px
+    font-size: 14px
+    border-bottom: 1px solid v.$border-color
     transition: background-color 0.2s
 
     &:hover
       background-color: v.$hover-color
 
-    &:last-child td
+    &:last-child
       border-bottom: none
-
-    td
-      padding: 12px
-      font-size: 14px
-      vertical-align: middle
-      border-bottom: 1px solid v.$border-color
-      overflow-wrap: anywhere
-
-      &:nth-child(1),
-      &:last-child
-        text-align: center
-
-    // 普段は文字に見せて、ホバー・フォーカスで入力欄に見せる
-    input[type='date']
-      position: relative
-      width: 100%
-      padding: 4px 6px
-      font-size: 14px
-      color: inherit
-      background-color: transparent
-      border: 1px solid transparent
-      border-radius: v.$radius-sm
-      cursor: pointer
-      transition: background-color 0.2s, border-color 0.2s
-
-      &:hover
-        background-color: v.$surface-color
-        border-color: v.$border-color-strong
-
-      &:focus
-        background-color: v.$surface-color
-        border-color: v.$primary-color
-        outline: 2px solid v.$primary-color
-        outline-offset: 1px
-
-      // 入力欄のどこをクリックしてもカレンダーが開くようにする
-      &::-webkit-calendar-picker-indicator
-        position: absolute
-        inset: 0
-        width: 100%
-        height: 100%
-        margin: 0
-        padding: 0
-        opacity: 0
-        cursor: pointer
 
     // 完了済みタスク
     &--completed
       color: v.$font-color-weak
 
-      td:nth-child(2)
+      .content__col--name
         text-decoration: line-through
         opacity: 0.6
 
     // 期限切れタスク
     &--expired
-      td:nth-child(3)
+      .content__col--deadline
         color: v.$danger-color
+
+  // 行の中の1列分
+  &__col
+    display: flex
+    align-items: center
+    justify-content: center
+    min-width: 0
+
+    &--name
+      justify-content: flex-start
+      overflow-wrap: anywhere
+
+    &--deadline
+      // テキストで表示するだけならこのまま。
+      // input[type='date'] を置いた場合は普段は文字に見せて、
+      // ホバー・フォーカスで入力欄に見せる
+      input[type='date']
+        position: relative
+        width: 100%
+        padding: 4px 6px
+        font-size: 14px
+        color: inherit
+        background-color: transparent
+        border: 1px solid transparent
+        border-radius: v.$radius-sm
+        cursor: pointer
+        transition: background-color 0.2s, border-color 0.2s
+
+        &:hover
+          background-color: v.$surface-color
+          border-color: v.$border-color-strong
+
+        &:focus
+          background-color: v.$surface-color
+          border-color: v.$primary-color
+          outline: 2px solid v.$primary-color
+          outline-offset: 1px
+
+        // 入力欄のどこをクリックしてもカレンダーが開くようにする
+        &::-webkit-calendar-picker-indicator
+          position: absolute
+          inset: 0
+          width: 100%
+          height: 100%
+          margin: 0
+          padding: 0
+          opacity: 0
+          cursor: pointer
