@@ -1,37 +1,17 @@
-// タスクの識別に id を使う理由
-//
-// state は非破壊で更新する方針にしている。元のオブジェクトを書き換えず、
-// 変更後のコピーを作って state.tasks ごと差し替える。
-// この方針では、同じタスクでも更新のたびに別のオブジェクトになるため、
-// 参照比較（t === task）は「どのタスクか」の判定に使えない。
-//
-// DOM のイベントハンドラは、描画した時点のオブジェクトをクロージャで
-// 掴んだまま残る。再描画を挟まずに state を更新すると state 側だけが
-// 新しいオブジェクトに進み、両者が一致しなくなる。結果として、
-// その行のチェックや削除がエラーも出さずに無反応になる。
-//
-// 中身での比較も使えない。名前も期限も同じタスクを複数作れる以上、
-// 中身は個体の識別子にならない。
-//
-// そこで、コピーをまたいでも変わらず他とかぶらない id を各タスクに持たせ、
-// t.id === task.id で照合している。
 const state = {
   showCompleted: false,
   tasks: [
     {
-      id: '1',
       name: 'Task 1',
       deadline: new AppDate().getDateInXMonth(1),
       completed: false,
     },
     {
-      id: '2',
       name: 'Task 2',
       deadline: new AppDate().getDateInXMonth(2),
       completed: false,
     },
     {
-      id: '3',
       name: 'Task 3',
       deadline: new AppDate().getDateInXMonth(3),
       completed: false,
@@ -40,21 +20,6 @@ const state = {
 };
 
 // ↓↓↓ ここを実装
-function removeHTML(container) {
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
-}
-
-function updateTask(tasks, id, changes) {
-  return tasks.map((t) => {
-    if (t.id === id) {
-      return { ...t, ...changes };
-    }
-    return t;
-  });
-}
-
 function renderTasks(container) {
   removeHTML(container);
 
@@ -67,14 +32,9 @@ function renderTasks(container) {
     // カラム1
     const col1 = div('content__col');
     const check = checkbox(task.completed, (checked) => {
-      const newTasks = updateTask(state.tasks, task.id, {
-        completed: checked,
-      });
-
-      state.tasks = newTasks;
+      task.completed = checked;
       renderTasks(container);
     });
-
     col1.append(check);
     row.append(col1);
 
@@ -84,11 +44,7 @@ function renderTasks(container) {
     taskNameInput.type = 'text';
     taskNameInput.value = task.name;
     taskNameInput.addEventListener('change', (e) => {
-      const newTasks = updateTask(state.tasks, task.id, {
-        name: e.target.value,
-      });
-
-      state.tasks = newTasks;
+      task.name = e.target.value;
     });
     col2.append(taskNameInput);
     row.append(col2);
@@ -99,11 +55,7 @@ function renderTasks(container) {
     dateInput.type = 'date';
     dateInput.value = task.deadline;
     dateInput.addEventListener('change', (e) => {
-      const newTasks = updateTask(state.tasks, task.id, {
-        deadline: AppDate.parse(e.target.value),
-      });
-
-      state.tasks = newTasks;
+      task.deadline = AppDate.parse(e.target.value);
     });
     col3.append(dateInput);
     row.append(col3);
@@ -112,7 +64,7 @@ function renderTasks(container) {
     const col4 = div('content__col');
     const deleteIcon = icon('icon icon--trash fa-solid fa-trash', () => {
       if (confirm('タスクを削除してもいいですか？')) {
-        const newTasks = state.tasks.filter((t) => t.id !== task.id);
+        const newTasks = state.tasks.filter((t) => t !== task);
         state.tasks = newTasks;
         renderTasks(container);
       }
@@ -125,23 +77,23 @@ function renderTasks(container) {
   });
 }
 
+function removeHTML(container) {
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+}
+
 function onSubmitTask(container) {
   const inputName = document.getElementById('js-task-name');
   const inputDeadline = document.getElementById('js-task-deadline');
 
-  const newTasks = [
-    ...state.tasks,
-    {
-      id: crypto.randomUUID(),
-      name: inputName.value,
-      deadline: inputDeadline.value
-        ? AppDate.parse(inputDeadline.value)
-        : new AppDate(),
-      completed: false,
-    },
-  ];
-
-  state.tasks = newTasks;
+  state.tasks.push({
+    name: inputName.value,
+    deadline: inputDeadline.value
+      ? AppDate.parse(inputDeadline.value)
+      : new AppDate(),
+    completed: false,
+  });
 
   inputName.value = '';
   inputDeadline.value = '';
