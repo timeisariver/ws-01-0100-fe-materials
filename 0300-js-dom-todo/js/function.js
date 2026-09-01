@@ -86,10 +86,17 @@ function renderTasks(container, tasks, showCompleted) {
     const col3 = div('content__col content__col--deadline');
     const dateInput = document.createElement('input');
     dateInput.type = 'date';
-    dateInput.value = task.deadline;
+    dateInput.value = task.deadline.toString();
     dateInput.addEventListener('change', (e) => {
+      const deadline = AppDate.parse(e.target.value);
+
+      if (!deadline) {
+        renderTasks(container, tasks, showCompleted);
+        return;
+      }
+
       const newTasks = updateTask(tasks, task.id, {
-        deadline: AppDate.parse(e.target.value),
+        deadline,
       });
 
       setTasks(container, newTasks);
