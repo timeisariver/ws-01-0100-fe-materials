@@ -1,20 +1,3 @@
-// タスクの識別に id を使う理由
-//
-// state は非破壊で更新する方針にしている。元のオブジェクトを書き換えず、
-// 変更後のコピーを作って state.tasks ごと差し替える。
-// この方針では、同じタスクでも更新のたびに別のオブジェクトになるため、
-// 参照比較（t === task）は「どのタスクか」の判定に使えない。
-//
-// DOM のイベントハンドラは、描画した時点のオブジェクトをクロージャで
-// 掴んだまま残る。再描画を挟まずに state を更新すると state 側だけが
-// 新しいオブジェクトに進み、両者が一致しなくなる。結果として、
-// その行のチェックや削除がエラーも出さずに無反応になる。
-//
-// 中身での比較も使えない。名前も期限も同じタスクを複数作れる以上、
-// 中身は個体の識別子にならない。
-//
-// そこで、コピーをまたいでも変わらず他とかぶらない id を各タスクに持たせ、
-// t.id === task.id で照合している。
 const state = {
   showCompleted: false,
   tasks: [
@@ -41,9 +24,7 @@ const state = {
 
 // ↓↓↓ ここを実装
 function removeHTML(container) {
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
+  container.replaceChildren();
 }
 
 function updateTask(tasks, id, changes) {
@@ -55,24 +36,32 @@ function updateTask(tasks, id, changes) {
   });
 }
 
-function renderTasks(container) {
+function setTasks(container, newTasks) {
+  state.tasks = newTasks;
+  renderTasks(container, state.tasks, state.showCompleted);
+}
+
+function visibleTasks(tasks, showCompleted) {
+  return tasks.filter((task) => {
+    return showCompleted || !task.completed;
+  });
+}
+
+function renderTasks(container, tasks, showCompleted) {
   removeHTML(container);
 
-  state.tasks.forEach((task) => {
-    if (!state.showCompleted && task.completed) return;
-
+  visibleTasks(tasks, showCompleted).forEach((task) => {
     // ロウ作成
     const row = div('content__row');
 
     // カラム1
     const col1 = div('content__col');
     const check = checkbox(task.completed, (checked) => {
-      const newTasks = updateTask(state.tasks, task.id, {
+      const newTasks = updateTask(tasks, task.id, {
         completed: checked,
       });
 
-      state.tasks = newTasks;
-      renderTasks(container);
+      setTasks(container, newTasks);
     });
 
     col1.append(check);
@@ -84,11 +73,11 @@ function renderTasks(container) {
     taskNameInput.type = 'text';
     taskNameInput.value = task.name;
     taskNameInput.addEventListener('change', (e) => {
-      const newTasks = updateTask(state.tasks, task.id, {
+      const newTasks = updateTask(tasks, task.id, {
         name: e.target.value,
       });
 
-      state.tasks = newTasks;
+      setTasks(container, newTasks);
     });
     col2.append(taskNameInput);
     row.append(col2);
@@ -99,11 +88,11 @@ function renderTasks(container) {
     dateInput.type = 'date';
     dateInput.value = task.deadline;
     dateInput.addEventListener('change', (e) => {
-      const newTasks = updateTask(state.tasks, task.id, {
+      const newTasks = updateTask(tasks, task.id, {
         deadline: AppDate.parse(e.target.value),
       });
 
-      state.tasks = newTasks;
+      setTasks(container, newTasks);
     });
     col3.append(dateInput);
     row.append(col3);
@@ -112,9 +101,9 @@ function renderTasks(container) {
     const col4 = div('content__col');
     const deleteIcon = icon('icon icon--trash fa-solid fa-trash', () => {
       if (confirm('タスクを削除してもいいですか？')) {
-        const newTasks = state.tasks.filter((t) => t.id !== task.id);
-        state.tasks = newTasks;
-        renderTasks(container);
+        const newTasks = tasks.filter((t) => t.id !== task.id);
+
+        setTasks(container, newTasks);
       }
     });
     col4.append(deleteIcon);
@@ -129,11 +118,15 @@ function onSubmitTask(container) {
   const inputName = document.getElementById('js-task-name');
   const inputDeadline = document.getElementById('js-task-deadline');
 
+  const inputNameValue = inputName.value.trim();
+
+  if (!inputNameValue) return;
+
   const newTasks = [
     ...state.tasks,
     {
       id: crypto.randomUUID(),
-      name: inputName.value,
+      name: inputNameValue,
       deadline: inputDeadline.value
         ? AppDate.parse(inputDeadline.value)
         : new AppDate(),
@@ -141,12 +134,10 @@ function onSubmitTask(container) {
     },
   ];
 
-  state.tasks = newTasks;
+  setTasks(container, newTasks);
 
   inputName.value = '';
   inputDeadline.value = '';
-
-  renderTasks(container);
 }
 // ↑↑↑
 
@@ -162,9 +153,10 @@ function main() {
     .querySelector('.js-show-completed')
     .addEventListener('change', (e) => {
       state.showCompleted = e.target.checked;
-      renderTasks(todoContainer);
+
+      renderTasks(todoContainer, state.tasks, state.showCompleted);
     });
-  renderTasks(todoContainer);
+  renderTasks(todoContainer, state.tasks, state.showCompleted);
 }
 
 main();
