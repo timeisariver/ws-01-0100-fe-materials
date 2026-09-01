@@ -47,6 +47,12 @@ function visibleTasks(tasks, showCompleted) {
   });
 }
 
+function col(klass, child) {
+  const column = div(klass);
+  column.append(child);
+  return column;
+}
+
 function renderTasks(container, tasks, showCompleted) {
   removeHTML(container);
 
@@ -55,7 +61,6 @@ function renderTasks(container, tasks, showCompleted) {
     const row = div('content__row');
 
     // カラム1
-    const col1 = div('content__col');
     const check = checkbox(task.completed, (checked) => {
       const newTasks = updateTask(tasks, task.id, {
         completed: checked,
@@ -63,12 +68,9 @@ function renderTasks(container, tasks, showCompleted) {
 
       setTasks(container, newTasks);
     });
-
-    col1.append(check);
-    row.append(col1);
+    row.append(col('content__col', check));
 
     // カラム2
-    const col2 = div('content__col content__col--name');
     const taskNameInput = document.createElement('input');
     taskNameInput.type = 'text';
     taskNameInput.value = task.name;
@@ -79,11 +81,9 @@ function renderTasks(container, tasks, showCompleted) {
 
       setTasks(container, newTasks);
     });
-    col2.append(taskNameInput);
-    row.append(col2);
+    row.append(col('content__col content__col--name', taskNameInput));
 
     // カラム3
-    const col3 = div('content__col content__col--deadline');
     const dateInput = document.createElement('input');
     dateInput.type = 'date';
     dateInput.value = task.deadline.toString();
@@ -101,11 +101,9 @@ function renderTasks(container, tasks, showCompleted) {
 
       setTasks(container, newTasks);
     });
-    col3.append(dateInput);
-    row.append(col3);
+    row.append(col('content__col content__col--deadline', dateInput));
 
     // カラム4
-    const col4 = div('content__col');
     const deleteIcon = icon('icon icon--trash fa-solid fa-trash', () => {
       if (confirm('タスクを削除してもいいですか？')) {
         const newTasks = tasks.filter((t) => t.id !== task.id);
@@ -113,8 +111,7 @@ function renderTasks(container, tasks, showCompleted) {
         setTasks(container, newTasks);
       }
     });
-    col4.append(deleteIcon);
-    row.append(col4);
+    row.append(col('content__col', deleteIcon));
 
     // ロウ追加
     container.append(row);
