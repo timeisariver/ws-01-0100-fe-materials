@@ -17,6 +17,35 @@
     ></script>
   </head>
   <body class="body">
+    <header class="header">
+      <h1 class="header__text">Todo</h1>
+    </header>
+    <main class="main">
+      <form class="form js-form">
+        <label>
+          <p>タスク</p>
+          <input id="js-task-name" type="text" required />
+        </label>
+        <label>
+          <p>期限日</p>
+          <input id="js-task-deadline" type="date" />
+        </label>
+        <button>追加</button>
+      </form>
+      <div class="content">
+        <label class="content__completed">
+          <input type="checkbox" class="js-show-completed" />
+          <p>完了タスクを表示</p>
+        </label>
+        <div class="content__head">
+          <div class="content__head-item">完了</div>
+          <div class="content__head-item content__head-item--name">タスク</div>
+          <div class="content__head-item">期限日</div>
+          <div class="content__head-item">削除</div>
+        </div>
+        <div class="content__list js-list-container"></div>
+      </div>
+    </main>
     <script src="js/lib.js"></script>
     <script src="js/function.js"></script>
   </body>

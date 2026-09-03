@@ -1,0 +1,17 @@
+@use '../shared/_base.sass' as b
+@use '../shared/variable' as v
+
+// lib.js の button() が生成する <button class="button ○○">
+.button
+  @extend %button
+
+  &--danger
+    background-color: v.$danger-color
+
+    &:hover
+      background-color: v.$danger-color-dark
+
+  &--small
+    height: 36px
+    padding: 0 16px
+    font-size: 13px
