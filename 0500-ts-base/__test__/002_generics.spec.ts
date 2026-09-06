@@ -1,8 +1,4 @@
-import {
-  List,
-  Stack,
-  Queue,
-} from '../practices/002_generics';
+import { List, Stack, Queue } from '../practices/002_generics';
 
 describe('List', () => {
   test('#data', () => {
@@ -33,7 +29,7 @@ describe('List', () => {
     l2.add('b');
     l2.add('c');
     expect(l2.data).toEqual(['a', 'b', 'c']);
-  })
+  });
 
   test('#pop', () => {
     const l1 = new List<number>([1, 2, 3]);
@@ -47,14 +43,14 @@ describe('List', () => {
     l2.pop();
     l2.pop();
     expect(l2.pop()).toBeUndefined();
-  })
+  });
 
   test('#remove', () => {
     const l1 = new List<number>([1, 2, 3]);
     expect(l1.remove(1)).toEqual(2);
 
     expect(l1.remove(-1)).toBeUndefined();
-  })
+  });
 });
 
 describe('Stack', () => {
@@ -72,7 +68,7 @@ describe('Stack', () => {
 
     const l2 = new Stack([]);
     expect(l2.size).toEqual(0);
-  })
+  });
 
   test('#push', () => {
     const l1 = new Stack([1, 2, 3]);
@@ -107,8 +103,8 @@ describe('Stack', () => {
 
     const l3 = new Stack<string>([]);
     expect(l3.peak()).toBeUndefined();
-  })
-})
+  });
+});
 
 describe('Queue', () => {
   test('#data', () => {
@@ -117,7 +113,7 @@ describe('Queue', () => {
 
     const l2 = new Queue([]);
     expect(l2.data).toEqual([]);
-  })
+  });
 
   test('#size', () => {
     const l1 = new Queue([1, 2, 3]);
@@ -125,7 +121,7 @@ describe('Queue', () => {
 
     const l2 = new Queue([]);
     expect(l2.size).toEqual(0);
-  })
+  });
 
   test('#enqueue', () => {
     const l1 = new Queue([1, 2, 3]);
@@ -135,7 +131,7 @@ describe('Queue', () => {
     const l2 = new Queue(['a', 'b', 'c']);
     l2.enqueue('d');
     expect(l2.data).toEqual(['a', 'b', 'c', 'd']);
-  })
+  });
 
   test('#dequeue', () => {
     const l1 = new Queue<number>([1, 2, 3]);
@@ -149,7 +145,7 @@ describe('Queue', () => {
     l2.dequeue();
     l2.dequeue();
     expect(l2.dequeue()).toBeUndefined();
-  })
+  });
 
   test('#peak', () => {
     const l1 = new Queue<number>([1, 2, 3]);
@@ -160,5 +156,5 @@ describe('Queue', () => {
 
     const l3 = new Queue<string>([]);
     expect(l3.peak()).toBeUndefined();
-  })
-})
+  });
+});

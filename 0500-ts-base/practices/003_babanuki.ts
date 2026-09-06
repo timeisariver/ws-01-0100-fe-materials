@@ -28,10 +28,16 @@
  *  - GameMaster クラスの run メソッドが実行されるとゲームが実行できるようにしてください。
  */
 
-import { Card, getRandomIndex, IPlayer, IGameMaster, ILogger, Logger } from "../lib/babanuki";
+import {
+  Card,
+  getRandomIndex,
+  IPlayer,
+  IGameMaster,
+  ILogger,
+  Logger,
+} from '../lib/babanuki';
 
-export class Player implements IPlayer {
-}
+export class Player implements IPlayer {}
 
 export class GameMaster implements IGameMaster {
   logger: ILogger;
@@ -48,10 +54,10 @@ export class GameMaster implements IGameMaster {
 // [編集不要] ターミナルでの実行用の関数。
 export function run() {
   const gameMaster = new GameMaster(new Logger(), [
-    new Player("Alice"),
-    new Player("Bob"),
-    new Player("Charlie"),
-    new Player("David"),
+    new Player('Alice'),
+    new Player('Bob'),
+    new Player('Charlie'),
+    new Player('David'),
   ]);
   gameMaster.run();
 }

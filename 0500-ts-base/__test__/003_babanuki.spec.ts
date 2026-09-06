@@ -1,6 +1,5 @@
-import { Player, GameMaster } from "../practices/003_babanuki";
-import { IPlayer, ILogger, Card, Suit } from "../lib/babanuki";
-
+import { Player, GameMaster } from '../practices/003_babanuki';
+import { IPlayer, ILogger, Card, Suit } from '../lib/babanuki';
 
 class LoggerStub implements ILogger {
   _firstDiscard: number = 0;
@@ -40,26 +39,23 @@ class LoggerStub implements ILogger {
   }
 }
 
-describe("GameMaster", () => {
+describe('GameMaster', () => {
   let outputs: string[] = [];
-  test(".run", () => {
+  test('.run', () => {
     const loggerStub = new LoggerStub();
-    const gm = new GameMaster(
-      loggerStub,
-      [
-        new Player("A"),
-        new Player("B"),
-        new Player("C"),
-        new Player("D"),
-      ],
-    );
+    const gm = new GameMaster(loggerStub, [
+      new Player('A'),
+      new Player('B'),
+      new Player('C'),
+      new Player('D'),
+    ]);
     gm.run();
 
     expect(loggerStub._firstDiscard).toEqual(1);
     expect(loggerStub._start).toEqual(1);
     expect(loggerStub._end?.length).toEqual(2);
 
-    expect(loggerStub._done.length).toBeGreaterThanOrEqual(0)
+    expect(loggerStub._done.length).toBeGreaterThanOrEqual(0);
     expect(loggerStub._done.length).toBeLessThan(5);
     expect(loggerStub._currentState.length).toBeGreaterThan(1);
     expect(loggerStub._discard.length).toBeGreaterThan(1);

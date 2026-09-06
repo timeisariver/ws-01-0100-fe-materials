@@ -5,7 +5,9 @@
   "scripts": {
     "test": "jest",
     "build": "tsc",
-    "start:babanuki": "npm run build && node drivers/babanuki.js"
+    "start:babanuki": "npm run build && node drivers/babanuki.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "author": "",
   "license": "ISC",

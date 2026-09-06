@@ -1,4 +1,3 @@
-
 # 0500-ts-base
 
 TypeScript 練習用のリポジトリ です。
@@ -47,4 +46,3 @@ $ npm run test # テストを実行
 ```bash
 $ npm run test [テストファイルへのパス] # テストを実行
 ```
-

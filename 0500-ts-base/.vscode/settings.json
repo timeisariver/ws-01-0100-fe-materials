@@ -1,6 +1,4 @@
 {
-  // Prettier の設定ファイル(.prettierrc)があるディレクトリのみフォーマットする。
-  // 現状 .prettierrc を持つのは 0200-js-base / 0300-js-dom-todo / 0500-ts-base なので、自動フォーマットはそこだけに効く。
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "prettier.requireConfig": true,
@@ -16,6 +14,9 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }
 }

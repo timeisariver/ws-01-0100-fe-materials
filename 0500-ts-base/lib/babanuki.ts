@@ -1,6 +1,8 @@
-
 // [編集不要] ランダムな数値を取得する関数
-export function getRandomIndex(max: number, flag: Record<number, boolean> = {}) {
+export function getRandomIndex(
+  max: number,
+  flag: Record<number, boolean> = {},
+) {
   let list = [];
   for (let i = 0; i < max; i++) {
     if (!flag[i]) {
@@ -14,7 +16,7 @@ export function getRandomIndex(max: number, flag: Record<number, boolean> = {}) 
 }
 
 // [編集不要] トランプのカードのスートを表す型
-export type Suit = "spade" | "diamond" | "heart" | "clover" | "joker";
+export type Suit = 'spade' | 'diamond' | 'heart' | 'clover' | 'joker';
 
 // [編集不要] トランプのカードを表すクラス
 export class Card {
@@ -27,23 +29,23 @@ export class Card {
   }
 
   static spade(value: number) {
-    return new Card("spade", value);
+    return new Card('spade', value);
   }
 
   static diamond(value: number) {
-    return new Card("diamond", value);
+    return new Card('diamond', value);
   }
 
   static heart(value: number) {
-    return new Card("heart", value);
+    return new Card('heart', value);
   }
 
   static clover(value: number) {
-    return new Card("clover", value);
+    return new Card('clover', value);
   }
 
   static joker() {
-    return new Card("joker", 0);
+    return new Card('joker', 0);
   }
 
   static prepare() {
@@ -60,7 +62,7 @@ export class Card {
   }
 
   get isJoker() {
-    return this.suit === "joker";
+    return this.suit === 'joker';
   }
 
   equal(card: Card) {
@@ -69,15 +71,15 @@ export class Card {
 
   toString() {
     switch (this.suit) {
-      case "spade":
+      case 'spade':
         return `♠️ ${this.value}`;
-      case "diamond":
+      case 'diamond':
         return `♦️ ${this.value}`;
-      case "heart":
+      case 'heart':
         return `♥️ ${this.value}`;
-      case "clover":
+      case 'clover':
         return `♣️ ${this.value}`;
-      case "joker":
+      case 'joker':
         return `JOKER`;
     }
   }
@@ -96,27 +98,27 @@ export interface ILogger {
 // [編集不要] ロガークラス. 画面への出力は console.log ではなくこちらのクラスを使って下さい。
 export class Logger implements ILogger {
   firstDiscard() {
-    console.log("[First Discard]");
+    console.log('[First Discard]');
   }
 
   start() {
-    console.log("[Game Start]");
+    console.log('[Game Start]');
   }
 
   end(loser: IPlayer, rank: IPlayer[]) {
-    console.log("[Game End]");
-    console.log(loser.name, "Loser");
-    console.log("Rank", rank);
+    console.log('[Game End]');
+    console.log(loser.name, 'Loser');
+    console.log('Rank', rank);
   }
 
   done(player: IPlayer) {
-    console.log("[!!!]", player.name, " Done");
+    console.log('[!!!]', player.name, ' Done');
   }
 
   currentState(turn: number, player: IPlayer) {
     console.log(
       turn,
-      "[STATE]",
+      '[STATE]',
       `${player.name}'s hands`,
       player.hands.map((it) => it.toString()),
     );
@@ -133,7 +135,7 @@ export class Logger implements ILogger {
 
   draw(from: IPlayer, to: IPlayer, card: Card) {
     console.log(
-      "[DRAW]",
+      '[DRAW]',
       `${from.name} drew " ${card.toString()} " from ${to.name}`,
     );
   }
@@ -157,5 +159,3 @@ export interface IGameMaster {
   turn: number;
   run: () => void;
 }
-
-

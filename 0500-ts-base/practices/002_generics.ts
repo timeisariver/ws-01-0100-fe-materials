@@ -1,14 +1,14 @@
 /* 2. 下記にそれぞれList、Stack、Queue クラスを実装して下さい
-*
-*     また
-*
-*       List => IList,
-*       Stack => IStack,
-*       Queue => IQueue
-*
-*     というインターフェースを実装して下さい。
-*
-*/
+ *
+ *     また
+ *
+ *       List => IList,
+ *       Stack => IStack,
+ *       Queue => IQueue
+ *
+ *     というインターフェースを実装して下さい。
+ *
+ */
 
 interface IList<T> {
   data: T[];
@@ -35,4 +35,3 @@ interface IQueue<T> {
 }
 
 // ↓↓↓ 以下に実装してください ↓↓↓
-
