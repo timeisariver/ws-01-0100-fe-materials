@@ -10,6 +10,7 @@
    振る舞い: 引数で渡された2つの数値を足し算して返す
 */
 
+/* [ここに実装] */
 export function add(num1: number, num2: number) {
   return num1 + num2;
 }
@@ -20,6 +21,8 @@ export function add(num1: number, num2: number) {
    返り値: number
    振る舞い: 配列の中身の数を全て足し算して返す
 */
+
+/* [ここに実装] */
 export function sum(array: number[]) {
   return array.reduce((accumulator, currentValue) => {
     return accumulator + currentValue;
@@ -33,6 +36,7 @@ export function sum(array: number[]) {
    振る舞い: 引数で渡されたDate型の日付をYYYY/MM/DDの形式にして返す
 */
 
+/* [ここに実装] */
 export function format(date: Date) {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -56,6 +60,7 @@ export function format(date: Date) {
    merge({}, {}) => {}
 */
 
+/* [ここに実装] */
 export function merge(o1: Record<string, number>, o2: Record<string, number>) {
   const mergedObject = { ...o1 };
 
@@ -81,6 +86,7 @@ export function merge(o1: Record<string, number>, o2: Record<string, number>) {
    stringify(undefined) => "undefined"
 */
 
+/* [ここに実装] */
 export function stringify(value: string | number | boolean | null | undefined) {
   return String(value);
 }
