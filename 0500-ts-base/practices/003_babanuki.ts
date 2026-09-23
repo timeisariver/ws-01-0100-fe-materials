@@ -37,15 +37,71 @@ import {
   Logger,
 } from '../lib/babanuki';
 
-export class Player implements IPlayer {}
+export class Player implements IPlayer {
+  name: string;
+  hands: Card[];
 
+  constructor(name: string) {
+    this.name = name;
+    this.hands = [];
+  }
+
+  get done() {
+    return this.hands.length === 0;
+  }
+
+  get onlyJoker() {
+    return this.hands.length === 1 && this.hands[0].isJoker;
+  }
+
+  assign(card: Card) {
+    this.hands.push(card);
+  }
+
+  draw(opponent: IPlayer) {
+    const drawIndex = getRandomIndex(opponent.hands.length);
+    const drawnCard = opponent.hands.splice(drawIndex, 1)[0];
+    this.assign(drawnCard);
+    return drawnCard;
+  }
+
+  discard() {
+    const discardedCards: Card[] = [];
+    const keepCards: Card[] = [];
+
+    while (this.hands.length !== 0) {
+      const shiftedCard = this.hands.shift();
+      if (!shiftedCard) break;
+
+      const pairIndex = this.hands.findIndex(
+        (card) => card.value === shiftedCard.value,
+      );
+
+      if (pairIndex !== -1) {
+        this.hands.splice(pairIndex, 1);
+        discardedCards.push(shiftedCard);
+      } else {
+        keepCards.push(shiftedCard);
+      }
+    }
+
+    this.hands = keepCards;
+    return discardedCards;
+  }
+}
 export class GameMaster implements IGameMaster {
   logger: ILogger;
   players: IPlayer[];
+  cards: Card[];
+  rank: IPlayer[];
+  turn: number;
 
   constructor(logger: ILogger, players: IPlayer[]) {
     this.logger = logger;
     this.players = players;
+    this.cards = Card.prepare();
+    this.rank = [];
+    this.turn = 0;
   }
 
   run() {}
