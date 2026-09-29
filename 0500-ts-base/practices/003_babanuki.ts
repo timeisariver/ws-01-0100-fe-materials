@@ -104,7 +104,104 @@ export class GameMaster implements IGameMaster {
     this.turn = 0;
   }
 
-  run() {}
+  run() {
+    this.deal();
+    this.firstDiscard();
+    this.play();
+  }
+
+  deal() {
+    let playerIndex = 0;
+
+    while (this.cards.length !== 0) {
+      const player = this.players[playerIndex];
+
+      for (let i = 0; i < 2; i++) {
+        if (this.cards.length === 0) break;
+
+        const index = getRandomIndex(this.cards.length);
+        const card = this.cards.splice(index, 1)[0];
+        player.assign(card);
+      }
+
+      playerIndex = (playerIndex + 1) % this.players.length;
+    }
+  }
+
+  firstDiscard() {
+    this.logger.firstDiscard();
+
+    for (const player of this.players) {
+      this.turn++;
+      this.logger.currentState(this.turn, player);
+
+      const discarded = player.discard();
+      this.logger.discard(player, discarded);
+    }
+  }
+
+  playTurn(player: IPlayer, opponent: IPlayer) {
+    this.turn++;
+    this.logger.currentState(this.turn, player);
+
+    const drawnCard = player.draw(opponent);
+    this.logger.draw(player, opponent, drawnCard);
+
+    const discarded = player.discard();
+    if (discarded.length !== 0) {
+      this.logger.discard(player, discarded);
+    }
+
+    if (player.done) {
+      this.logger.done(player);
+      this.rank.push(player);
+    }
+
+    if (opponent.done) {
+      this.logger.done(opponent);
+      this.rank.push(opponent);
+    }
+
+    if (player.onlyJoker) {
+      return player;
+    }
+
+    if (opponent.onlyJoker) {
+      return opponent;
+    }
+
+    if (this.rank.length === this.players.length - 1) {
+      return this.players.find((p) => !p.done);
+    }
+  }
+
+  play() {
+    this.logger.start();
+
+    let playerIndex = 0;
+
+    while (true) {
+      const player = this.players[playerIndex];
+
+      if (!player.done) {
+        let opponentIndex = (playerIndex + 1) % this.players.length;
+
+        while (this.players[opponentIndex].done) {
+          opponentIndex = (opponentIndex + 1) % this.players.length;
+        }
+
+        const opponent = this.players[opponentIndex];
+        const loser = this.playTurn(player, opponent);
+
+        if (loser) {
+          this.logger.end(loser, this.rank);
+          return;
+        }
+      }
+
+      playerIndex = (playerIndex + 1) % this.players.length;
+    }
+  }
 }
 
 // [編集不要] ターミナルでの実行用の関数。
