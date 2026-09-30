@@ -37,18 +37,171 @@ import {
   Logger,
 } from '../lib/babanuki';
 
-export class Player implements IPlayer {}
+export class Player implements IPlayer {
+  name: string;
+  hands: Card[];
 
+  constructor(name: string) {
+    this.name = name;
+    this.hands = [];
+  }
+
+  get done() {
+    return this.hands.length === 0;
+  }
+
+  get onlyJoker() {
+    return this.hands.length === 1 && this.hands[0].isJoker;
+  }
+
+  assign(card: Card) {
+    this.hands.push(card);
+  }
+
+  draw(opponent: IPlayer) {
+    const drawIndex = getRandomIndex(opponent.hands.length);
+    const drawnCard = opponent.hands.splice(drawIndex, 1)[0];
+    this.assign(drawnCard);
+    return drawnCard;
+  }
+
+  discard() {
+    const discardedCards: Card[] = [];
+    const keepCards: Card[] = [];
+
+    while (this.hands.length !== 0) {
+      const shiftedCard = this.hands.shift();
+      if (!shiftedCard) break;
+
+      const pairIndex = this.hands.findIndex(
+        (card) => card.value === shiftedCard.value,
+      );
+
+      if (pairIndex !== -1) {
+        this.hands.splice(pairIndex, 1);
+        discardedCards.push(shiftedCard);
+      } else {
+        keepCards.push(shiftedCard);
+      }
+    }
+
+    this.hands = keepCards;
+    return discardedCards;
+  }
+}
 export class GameMaster implements IGameMaster {
   logger: ILogger;
   players: IPlayer[];
+  cards: Card[];
+  rank: IPlayer[];
+  turn: number;
 
   constructor(logger: ILogger, players: IPlayer[]) {
     this.logger = logger;
     this.players = players;
+    this.cards = Card.prepare();
+    this.rank = [];
+    this.turn = 0;
   }
 
-  run() {}
+  run() {
+    this.deal();
+    this.firstDiscard();
+    this.play();
+  }
+
+  deal() {
+    let playerIndex = 0;
+
+    while (this.cards.length !== 0) {
+      const player = this.players[playerIndex];
+
+      for (let i = 0; i < 2; i++) {
+        if (this.cards.length === 0) break;
+
+        const index = getRandomIndex(this.cards.length);
+        const card = this.cards.splice(index, 1)[0];
+        player.assign(card);
+      }
+
+      playerIndex = (playerIndex + 1) % this.players.length;
+    }
+  }
+
+  firstDiscard() {
+    this.logger.firstDiscard();
+
+    for (const player of this.players) {
+      this.turn++;
+      this.logger.currentState(this.turn, player);
+
+      const discarded = player.discard();
+      this.logger.discard(player, discarded);
+    }
+  }
+
+  playTurn(player: IPlayer, opponent: IPlayer) {
+    this.turn++;
+    this.logger.currentState(this.turn, player);
+
+    const drawnCard = player.draw(opponent);
+    this.logger.draw(player, opponent, drawnCard);
+
+    const discarded = player.discard();
+    if (discarded.length !== 0) {
+      this.logger.discard(player, discarded);
+    }
+
+    if (player.done) {
+      this.logger.done(player);
+      this.rank.push(player);
+    }
+
+    if (opponent.done) {
+      this.logger.done(opponent);
+      this.rank.push(opponent);
+    }
+
+    if (player.onlyJoker) {
+      return player;
+    }
+
+    if (opponent.onlyJoker) {
+      return opponent;
+    }
+
+    if (this.rank.length === this.players.length - 1) {
+      return this.players.find((p) => !p.done);
+    }
+  }
+
+  play() {
+    this.logger.start();
+
+    let playerIndex = 0;
+
+    while (true) {
+      const player = this.players[playerIndex];
+
+      if (!player.done) {
+        let opponentIndex = (playerIndex + 1) % this.players.length;
+
+        while (this.players[opponentIndex].done) {
+          opponentIndex = (opponentIndex + 1) % this.players.length;
+        }
+
+        const opponent = this.players[opponentIndex];
+        const loser = this.playTurn(player, opponent);
+
+        if (loser) {
+          this.logger.end(loser, this.rank);
+          return;
+        }
+      }
+
+      playerIndex = (playerIndex + 1) % this.players.length;
+    }
+  }
 }
 
 // [編集不要] ターミナルでの実行用の関数。
